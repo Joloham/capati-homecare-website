@@ -31,8 +31,8 @@ async function adminLogin() {
     const data = await res.json();
 
     if (res.ok && data.access_token) {
-      sessionStorage.setItem("sb_access_token", data.access_token);
-      sessionStorage.setItem("sb_user_email", data.user.email);
+      localStorage.setItem("sb_access_token", data.access_token);
+      localStorage.setItem("sb_user_email", data.user.email);
       window.location.href = "/admin/dashboard.html";
     } else {
       msg.textContent = data.error_description || "Invalid credentials.";
@@ -48,7 +48,7 @@ async function adminLogin() {
 // Call this on dashboard page to redirect if not logged in
 
 function requireAuth() {
-  const token = sessionStorage.getItem("sb_access_token");
+  const token = localStorage.getItem("sb_access_token");
   if (!token) {
     window.location.href = "/admin/login.html";
   }
@@ -56,11 +56,11 @@ function requireAuth() {
 }
 
 function getAdminEmail() {
-  return sessionStorage.getItem("sb_user_email") || "Admin";
+  return localStorage.getItem("sb_user_email") || "Admin";
 }
 
 function adminLogout() {
-  sessionStorage.clear();
+  localStorage.clear();
   window.location.href = "/admin/login.html";
 }
 

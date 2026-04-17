@@ -30,5 +30,15 @@
   </div>
 
   <script src="/static/js/admin.js"></script>
+  <script>
+    // If already logged in, skip login page
+    if (localStorage.getItem("sb_access_token")) {
+      window.location.href = "/admin/dashboard.html";
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") adminLogin();
+    });
+  </script>
 </body>
 </html>
