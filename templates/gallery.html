@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery – Capati Homecare</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <section>
+    <p class="section-label">Our Facility</p>
+    <h2 class="section-title">Photo Gallery</h2>
+    <p class="section-sub">A glimpse into daily life at Capati Homecare.</p>
+
+    <div id="gallery" class="gallery-grid">
+      <p style="color: var(--text-light); font-size: 0.9rem;">Loading photos...</p>
+    </div>
+  </section>
+
+  <div id="footer-container"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;">
+    <button onclick="closeLightbox()" style="position:absolute;top:1.25rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;">✕</button>
+    <img id="lightbox-img" src="" alt="" style="max-width:90vw;max-height:88vh;border-radius:8px;object-fit:contain;"/>
+  </div>
+
+  <script src="/static/js/components.js"></script>
+  <script src="/static/js/gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – Capati Homecare</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+
+  <div class="dashboard-header">
+    <div class="logo" style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--sage-dark);">
+      Capati <span style="color:var(--terracotta);">Homecare</span> &mdash; Admin
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="/" style="font-size:0.875rem;color:var(--sage-dark);">← Back to site</a>
+      <span id="admin-email" style="font-size:0.875rem;color:var(--text-light);"></span>
+      <button class="btn btn-secondary" onclick="adminLogout()" style="padding:0.4rem 1rem;font-size:0.875rem;">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+
+    <h2 style="margin-bottom:0.25rem;">Photo Gallery</h2>
+    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:2rem;">Upload and manage photos shown in the public gallery.</p>
+
+    <!-- Upload Zone -->
+    <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div style="font-size:2rem;">📷</div>
+      <p>Click to select photos, or drag and drop here</p>
+      <p style="font-size:0.8rem;">Supports JPG, PNG, WEBP</p>
+    </div>
+
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;"/>
+
+    <p id="upload-status" style="font-size:0.875rem;color:var(--sage-dark);margin-bottom:1rem;"></p>
+
+    <div id="upload-previews" class="uploaded-previews"></div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
+
+    <h3 style="margin-bottom:1rem;">Existing Photos</h3>
+    <div id="existing-photos" class="uploaded-previews">
+      <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
+
+    <h2 style="margin-bottom:0.25rem;">Messages</h2>
+    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Contact form submissions from visitors.</p>
+    <div id="messages-list">
+      <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
+    </div>
+
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;">
+    <button onclick="closeLightbox()" style="position:absolute;top:1.25rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;">✕</button>
+    <img id="lightbox-img" src="" alt="" style="max-width:90vw;max-height:88vh;border-radius:8px;object-fit:contain;"/>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      requireAuth();
+      document.getElementById("admin-email").textContent = getAdminEmail();
+      loadDashboardGallery();
+      loadMessages();
+
+      const input = document.getElementById("file-input");
+      input.addEventListener("change", () => {
+        if (input.files.length > 0) uploadPhotos(input.files);
+      });
+
+      const zone = document.getElementById("drop-zone");
+      zone.addEventListener("dragover", e => {
+        e.preventDefault();
+        zone.style.borderColor = "var(--sage)";
+      });
+      zone.addEventListener("dragleave", () => {
+        zone.style.borderColor = "var(--border)";
+      });
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        zone.style.borderColor = "var(--border)";
+        if (e.dataTransfer.files.length > 0) uploadPhotos(e.dataTransfer.files);
+      });
+
+      document.getElementById("lightbox").addEventListener("click", e => {
+        if (e.target === document.getElementById("lightbox")) closeLightbox();
+      });
+    });
+
+    function openLightbox(url) {
+      const lb = document.getElementById("lightbox");
+      document.getElementById("lightbox-img").src = url;
+      lb.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      document.getElementById("lightbox").style.display = "none";
+      document.getElementById("lightbox-img").src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeLightbox();
+    });
+  </script>
+</body>
+</html>
