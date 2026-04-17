@@ -204,22 +204,22 @@ async function deletePhoto(filename, btn) {
   if (!confirm(`Delete "${filename}"?`)) return;
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}`, {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
         "apikey": SUPABASE_KEY
-      },
-      body: JSON.stringify({ prefixes: [filename] })
+      }
     });
 
     if (res.ok) {
       btn.closest("div").remove();
     } else {
-      alert("Failed to delete photo.");
+      const err = await res.json();
+      alert(`Failed to delete: ${err.error || JSON.stringify(err)}`);
     }
   } catch (err) {
     console.error(err);
+    alert("Network error while deleting.");
   }
 }
