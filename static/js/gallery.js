@@ -41,6 +41,11 @@ async function loadGallery() {
 
     container.innerHTML = files
       .filter(f => f.name)
+      .sort((a, b) => {
+        const tsA = parseInt(a.name.split("_")[0]) || 0;
+        const tsB = parseInt(b.name.split("_")[0]) || 0;
+        return tsB - tsA;
+      })
       .map(f => {
         const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${f.name}`;
         return `<img src="${url}" alt="${f.name}" loading="lazy" style="cursor:pointer;" onclick="openLightbox('${url}')"/>`;
