@@ -205,9 +205,9 @@ async function loadMessages(append = false) {
       card.id = `msg-${m.id}`;
       card.style.cssText = `background:${isRead ? "var(--cream)" : "var(--warm-white)"};border:1px solid ${isRead ? "var(--border)" : "var(--sage)"};border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;opacity:${isRead ? "0.5" : "1"};`;
       card.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
-          <div style="display:flex;align-items:center;gap:0.6rem;">
-            ${!isRead ? `<span style="width:8px;height:8px;background:var(--sage);border-radius:50%;display:inline-block;"></span>` : ""}
+        <div class="msg-name-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
+          <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;">
+            <span class="unread-dot" style="width:8px;height:8px;background:var(--sage);border-radius:50%;display:${isRead ? "none" : "inline-block"};flex-shrink:0;"></span>
             <strong style="font-family:'Playfair Display',serif;font-size:1rem;">${m.name}</strong>
           </div>
           <span style="font-size:0.8rem;color:var(--text-light);">${date}</span>
@@ -215,7 +215,7 @@ async function loadMessages(append = false) {
         <a href="mailto:${m.email}" style="font-size:0.875rem;color:var(--sage-dark);">${m.email}</a>
         <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-mid);white-space:pre-wrap;">${m.message}</p>
         <div style="margin-top:1rem;display:flex;gap:0.75rem;">
-          <button onclick="toggleRead(${m.id}, ${isRead})" style="font-size:0.8rem;padding:0.3rem 0.85rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">
+          <button class="toggle-read-btn" onclick="toggleRead(${m.id}, ${isRead})" style="font-size:0.8rem;padding:0.3rem 0.85rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">
             ${isRead ? "Mark Unread" : "Mark Read"}
           </button>
           <button onclick="deleteMessage(${m.id})" style="font-size:0.8rem;padding:0.3rem 0.85rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">
@@ -240,7 +240,7 @@ async function loadMessages(append = false) {
 async function toggleRead(id, currentlyRead) {
   const token = requireAuth();
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
       method: "PATCH",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -250,7 +250,28 @@ async function toggleRead(id, currentlyRead) {
       },
       body: JSON.stringify({ read: !currentlyRead })
     });
-    loadMessages();
+
+    if (!res.ok) return;
+
+    const card = document.getElementById(`msg-${id}`);
+    if (!card) return;
+
+    const nowRead = !currentlyRead;
+    card.style.background = nowRead ? "var(--cream)" : "var(--warm-white)";
+    card.style.borderColor = nowRead ? "var(--border)" : "var(--sage)";
+    card.style.opacity = nowRead ? "0.5" : "1";
+
+    // Update dot
+    const dot = card.querySelector(".unread-dot");
+    if (dot) dot.style.display = nowRead ? "none" : "inline-block";
+
+    // Update button text and toggle state
+    const btn = card.querySelector(".toggle-read-btn");
+    if (btn) {
+      btn.textContent = nowRead ? "Mark Unread" : "Mark Read";
+      btn.setAttribute("onclick", `toggleRead(${id}, ${nowRead})`);
+    }
+
   } catch (err) {
     console.error(err);
   }
