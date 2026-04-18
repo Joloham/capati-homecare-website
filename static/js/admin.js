@@ -64,24 +64,66 @@ function adminLogout() {
   window.location.href = "/admin/login.html";
 }
 
-// ── UPLOAD ──
+// ── STAGING ──
 
-async function uploadPhotos(files) {
+let stagedFiles = [];
+
+function stageFiles(files) {
+  const newFiles = Array.from(files);
+  stagedFiles = [...stagedFiles, ...newFiles];
+  renderStaging();
+}
+
+function renderStaging() {
+  const area = document.getElementById("staging-area");
+  const previews = document.getElementById("staging-previews");
+  const count = document.getElementById("staging-count");
+
+  if (stagedFiles.length === 0) {
+    area.style.display = "none";
+    return;
+  }
+
+  area.style.display = "block";
+  count.textContent = `${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""} selected`;
+
+  previews.innerHTML = "";
+  stagedFiles.forEach((file, index) => {
+    const url = URL.createObjectURL(file);
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
+    wrapper.innerHTML = `
+      <img src="${url}" style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);"/>
+      <button onclick="removeStagedFile(${index})" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.8rem;">✕</button>
+      <p style="font-size:0.7rem;color:var(--text-light);margin-top:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.name}</p>`;
+    previews.appendChild(wrapper);
+  });
+}
+
+function removeStagedFile(index) {
+  stagedFiles.splice(index, 1);
+  renderStaging();
+}
+
+function clearStaging() {
+  stagedFiles = [];
+  document.getElementById("staging-area").style.display = "none";
+  document.getElementById("file-input").value = "";
+  document.getElementById("upload-status").textContent = "";
+}
+
+async function confirmUpload() {
+  if (stagedFiles.length === 0) return;
   const token = requireAuth();
   const statusEl = document.getElementById("upload-status");
-  const previews = document.getElementById("upload-previews");
+  const existingPhotos = document.getElementById("existing-photos");
 
-  statusEl.textContent = "";
+  statusEl.textContent = `Uploading ${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""}...`;
 
-  for (const file of files) {
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowed.includes(file.type)) {
-      statusEl.textContent = `Skipped ${file.name} — unsupported format.`;
-      continue;
-    }
+  let successCount = 0;
 
+  for (const file of stagedFiles) {
     const filename = `${Date.now()}_${file.name}`;
-
     try {
       const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
         method: "POST",
@@ -95,21 +137,29 @@ async function uploadPhotos(files) {
       });
 
       if (res.ok) {
+        successCount++;
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`;
-        const img = document.createElement("img");
-        img.src = publicUrl;
-        img.alt = file.name;
-        previews.appendChild(img);
-        statusEl.textContent = "Upload successful!";
-      } else {
-        const err = await res.json();
-        statusEl.textContent = `Failed to upload ${file.name}: ${err.error || "unknown error"}`;
+
+        // Add directly to existing photos
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.innerHTML = `
+          <img src="${publicUrl}" alt="${filename}" style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;" onclick="openLightbox('${publicUrl}')"/>
+          <button onclick="deletePhoto('${filename}', this)" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.8rem;">✕</button>`;
+
+        // Remove "no photos" placeholder if present
+        const placeholder = existingPhotos.querySelector("p");
+        if (placeholder) placeholder.remove();
+
+        existingPhotos.prepend(wrapper);
       }
     } catch (err) {
-      statusEl.textContent = `Error uploading ${file.name}.`;
       console.error(err);
     }
   }
+
+  statusEl.textContent = `${successCount} of ${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""} uploaded successfully.`;
+  clearStaging();
 }
 
 // ── LOAD EXISTING GALLERY ON DASHBOARD ──

@@ -33,9 +33,20 @@
 
     <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;"/>
 
-    <p id="upload-status" style="font-size:0.875rem;color:var(--sage-dark);margin-bottom:1rem;"></p>
+    <!-- Staging area -->
+    <div id="staging-area" style="display:none;margin-top:1.25rem;">
+      <p style="font-size:0.875rem;color:var(--text-mid);margin-bottom:0.75rem;">Ready to upload:</p>
+      <div id="staging-previews" class="uploaded-previews"></div>
+      <div style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+        <button class="btn btn-primary" onclick="confirmUpload()">Upload All</button>
+        <button class="btn btn-secondary" onclick="clearStaging()">Clear</button>
+        <span id="staging-count" style="font-size:0.875rem;color:var(--text-light);"></span>
+      </div>
+    </div>
 
-    <div id="upload-previews" class="uploaded-previews"></div>
+    <p id="upload-status" style="font-size:0.875rem;color:var(--sage-dark);margin-top:1rem;"></p>
+
+    <div id="upload-previews" class="uploaded-previews" style="display:none;"></div>
 
     <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
 
@@ -73,7 +84,7 @@
 
       const input = document.getElementById("file-input");
       input.addEventListener("change", () => {
-        if (input.files.length > 0) uploadPhotos(input.files);
+        if (input.files.length > 0) stageFiles(input.files);
       });
 
       const zone = document.getElementById("drop-zone");
@@ -87,7 +98,7 @@
       zone.addEventListener("drop", e => {
         e.preventDefault();
         zone.style.borderColor = "var(--border)";
-        if (e.dataTransfer.files.length > 0) uploadPhotos(e.dataTransfer.files);
+        if (e.dataTransfer.files.length > 0) stageFiles(e.dataTransfer.files);
       });
 
       document.getElementById("lightbox").addEventListener("click", e => {
