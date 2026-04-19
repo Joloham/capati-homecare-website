@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ – Capati Homecare</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
+  <style>
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--warm-white);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faq-question:hover {
+      background: var(--cream);
+    }
+
+    .faq-icon {
+      font-size: 1.2rem;
+      color: var(--sage);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.3s ease;
+      padding: 0 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 1.5rem 1.25rem;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <section>
+    <p class="section-label">Got Questions?</p>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <p class="section-sub">Everything you need to know about Capati Homecare. Can't find your answer? <a href="/contact.html" style="color:var(--sage-dark);">Contact us.</a></p>
+
+    <div style="max-width:720px;">
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How do I enroll a loved one?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          You can start by sending us a message through our Contact page or calling us directly. We'll schedule a free assessment visit to understand your loved one's needs and discuss the best care plan.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What areas do you serve?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          We currently serve residents in Quezon City and nearby areas in Metro Manila. Contact us to confirm if we cover your specific location.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is there a minimum contract or commitment?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          We offer flexible arrangements. There is no long-term lock-in — we work with families on a month-to-month basis, though longer commitments may come with discounts.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Are your caregivers trained and background-checked?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Yes. All our caregivers go through a thorough background check, reference verification, and in-house training before being assigned to any resident. Your loved one's safety is our top priority.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can family members visit anytime?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Absolutely. We encourage family involvement and visits. We believe that staying connected with family is an important part of a resident's emotional wellbeing.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What happens in case of a medical emergency?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Our caregivers are trained in basic first aid and emergency response. In case of a medical emergency, we immediately contact the family and coordinate with the nearest medical facility.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How are payments handled?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Payments are made monthly and can be done via bank transfer or GCash. A detailed billing statement is provided every billing period.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="footer-container"></div>
+  <script src="/static/js/components.js"></script>
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest(".faq-item");
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
+      if (!isOpen) item.classList.add("open");
+    }
+  </script>
+</body>
+</html>
