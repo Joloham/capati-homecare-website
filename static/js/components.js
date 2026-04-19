@@ -5,7 +5,6 @@ async function loadComponent(id, path) {
     const html = await res.text();
     document.getElementById(id).innerHTML = html;
 
-    // Highlight active nav link
     if (id === "navbar-container") {
       const links = document.querySelectorAll("#navbar-container ul a");
       links.forEach(link => {
@@ -14,7 +13,6 @@ async function loadComponent(id, path) {
         }
       });
 
-      // Hamburger toggle
       const toggle = document.getElementById("nav-toggle");
       const menu = document.getElementById("nav-menu");
       if (toggle && menu) {
@@ -23,6 +21,12 @@ async function loadComponent(id, path) {
         });
       }
     }
+
+    if (id === "footer-container") {
+      const yearEl = document.getElementById("footer-year");
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    }
+
   } catch (err) {
     console.error(err);
   }
@@ -32,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadComponent("navbar-container", "/static/components/navbar.html");
   loadComponent("footer-container", "/static/components/footer.html");
 
-  // Scroll fade-in
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
