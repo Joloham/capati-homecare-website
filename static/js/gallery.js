@@ -2,6 +2,12 @@ const SUPABASE_URL = "https://izhqaqpsuffkhkegwbbg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_mJnBA_xMaqIxfr3XgiJZeQ_pSfyqMJ-";
 const BUCKET = "gallery";
 
+function showSkeleton(container, count = 6) {
+  container.innerHTML = Array(count).fill(`
+    <div style="width:100%;height:200px;border-radius:var(--radius);background:linear-gradient(90deg,#e8e0d8 25%,#f0ebe4 50%,#e8e0d8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+  `).join("");
+}
+
 function openLightbox(url) {
   const lb = document.getElementById("lightbox");
   document.getElementById("lightbox-img").src = url;
@@ -17,6 +23,7 @@ function closeLightbox() {
 
 async function loadGallery() {
   const container = document.getElementById("gallery");
+  showSkeleton(container);
 
   try {
     const res = await fetch(
@@ -48,7 +55,7 @@ async function loadGallery() {
       })
       .map(f => {
         const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${f.name}`;
-        return `<img src="${url}" alt="${f.name}" loading="lazy" style="cursor:pointer;" onclick="openLightbox('${url}')"/>`;
+        return `<img src="${url}" alt="" loading="lazy" style="cursor:pointer;" onclick="openLightbox('${url}')"/>`;
       })
       .join("");
 
