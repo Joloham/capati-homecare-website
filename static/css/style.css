@@ -612,6 +612,15 @@ section {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Contact page */
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .contact-name-phone {
+    grid-template-columns: 1fr !important;
+  }
+
   /* Admin login */
   .admin-wrapper {
     padding: 1.25rem;

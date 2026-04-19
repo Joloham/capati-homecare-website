@@ -1,5 +1,6 @@
 async function submitContact() {
   const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
   const email = document.getElementById("email").value.trim();
   const message = document.getElementById("message").value.trim();
   const msg = document.getElementById("form-msg");
@@ -9,7 +10,7 @@ async function submitContact() {
   msg.textContent = "";
 
   if (!name || !email || !message) {
-    msg.textContent = "Please fill in all fields.";
+    msg.textContent = "Please fill in all required fields.";
     msg.classList.add("error");
     return;
   }
@@ -18,7 +19,7 @@ async function submitContact() {
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, message })
+      body: JSON.stringify({ name, phone, email, message })
     });
 
     const data = await res.json();
@@ -26,10 +27,10 @@ async function submitContact() {
     if (res.ok) {
       msg.textContent = "Message sent! We'll get back to you soon.";
       document.getElementById("name").value = "";
+      document.getElementById("phone").value = "";
       document.getElementById("email").value = "";
       document.getElementById("message").value = "";
 
-      // Start cooldown
       let seconds = 30;
       btn.disabled = true;
       btn.style.opacity = "0.6";

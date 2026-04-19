@@ -268,6 +268,7 @@ async function loadMessages(append = false) {
           <span style="font-size:0.8rem;color:var(--text-light);">${date}</span>
         </div>
         <a href="mailto:${m.email}" style="font-size:0.875rem;color:var(--sage-dark);">${m.email}</a>
+        ${m.phone ? `<p style="font-size:0.875rem;color:var(--text-mid);margin-top:0.2rem;">📞 ${m.phone}</p>` : ""}
         <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-mid);white-space:pre-wrap;">${m.message}</p>
         <div style="margin-top:1rem;display:flex;gap:0.75rem;">
           <button class="toggle-read-btn" onclick="toggleRead(${m.id}, ${isRead})" style="font-size:0.8rem;padding:0.3rem 0.85rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">

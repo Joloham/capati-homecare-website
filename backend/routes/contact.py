@@ -10,6 +10,7 @@ def contact():
     data = request.get_json()
 
     name = data.get("name", "").strip()
+    phone = data.get("phone", "").strip()
     email = data.get("email", "").strip()
     message = data.get("message", "").strip()
 
@@ -19,6 +20,7 @@ def contact():
     try:
         supabase.table("contacts").insert({
             "name": name,
+            "phone": phone,
             "email": email,
             "message": message
         }).execute()
