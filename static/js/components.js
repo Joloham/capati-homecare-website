@@ -31,4 +31,19 @@ async function loadComponent(id, path) {
 document.addEventListener("DOMContentLoaded", () => {
   loadComponent("navbar-container", "/static/components/navbar.html");
   loadComponent("footer-container", "/static/components/footer.html");
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".card, .pricing-card, section, .hero").forEach(el => {
+    el.classList.add("fade-in");
+    observer.observe(el);
+  });
 });
