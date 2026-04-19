@@ -3,6 +3,7 @@ async function submitContact() {
   const email = document.getElementById("email").value.trim();
   const message = document.getElementById("message").value.trim();
   const msg = document.getElementById("form-msg");
+  const btn = document.querySelector("button[onclick='submitContact()']");
 
   msg.className = "form-message";
   msg.textContent = "";
@@ -27,6 +28,25 @@ async function submitContact() {
       document.getElementById("name").value = "";
       document.getElementById("email").value = "";
       document.getElementById("message").value = "";
+
+      // Start cooldown
+      let seconds = 30;
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      btn.style.cursor = "not-allowed";
+
+      const interval = setInterval(() => {
+        btn.textContent = `Wait ${seconds}s`;
+        seconds--;
+        if (seconds < 0) {
+          clearInterval(interval);
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          btn.style.cursor = "pointer";
+          btn.textContent = "Send Message";
+        }
+      }, 1000);
+
     } else {
       msg.textContent = data.error || "Something went wrong.";
       msg.classList.add("error");
