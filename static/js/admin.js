@@ -114,7 +114,6 @@ function clearStaging() {
 
 async function confirmUpload() {
   if (stagedFiles.length === 0) return;
-  const token = requireAuth();
   const statusEl = document.getElementById("upload-status");
   const existingPhotos = document.getElementById("existing-photos");
 
@@ -123,38 +122,37 @@ async function confirmUpload() {
   let successCount = 0;
 
   for (const file of stagedFiles) {
-    const filename = `${Date.now()}_${file.name}`;
+    const formData = new FormData();
+    formData.append("file", file);
+
     try {
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
+      const res = await fetch("/api/upload", {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "apikey": SUPABASE_KEY,
-          "Content-Type": file.type,
-          "x-upsert": "false"
-        },
-        body: file
+        body: formData
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         successCount++;
-        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`;
+        const publicUrl = data.url;
 
-        // Add directly to existing photos
         const wrapper = document.createElement("div");
         wrapper.style.position = "relative";
         wrapper.innerHTML = `
-          <img src="${publicUrl}" alt="${filename}" style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;" onclick="openLightbox('${publicUrl}')"/>
-          <button onclick="deletePhoto('${filename}', this)" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.8rem;">✕</button>`;
+          <img src="${publicUrl}" alt="" style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;" onclick="openLightbox('${publicUrl}')"/>
+          <button onclick="deletePhoto('${data.filename}', this)" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.8rem;">✕</button>`;
 
-        // Remove "no photos" placeholder if present
         const placeholder = existingPhotos.querySelector("p");
         if (placeholder) placeholder.remove();
 
         existingPhotos.prepend(wrapper);
+      } else {
+        statusEl.textContent = `Failed to upload ${file.name}: ${data.error || "unknown error"}`;
       }
     } catch (err) {
       console.error(err);
+      statusEl.textContent = `Error uploading ${file.name}.`;
     }
   }
 

@@ -22,21 +22,22 @@ def upload():
         return jsonify({"error": "Empty filename"}), 400
 
     if not allowed_file(file.filename):
-        return jsonify({"error": "File type not allowed"}), 400
+        return jsonify({"error": "File type not allowed. Use JPG, PNG or WEBP."}), 400
 
     try:
+        import time
+        filename = f"{int(time.time() * 1000)}_{file.filename}"
         file_bytes = file.read()
-        file_path = f"{file.filename}"
         content_type = file.content_type or "image/jpeg"
 
         supabase.storage.from_(BUCKET_NAME).upload(
-            path=file_path,
+            path=filename,
             file=file_bytes,
             file_options={"content-type": content_type}
         )
 
-        public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(file_path)
-        return jsonify({"url": public_url}), 200
+        public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
+        return jsonify({"url": public_url, "filename": filename}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
