@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
+import time
 
 upload_bp = Blueprint("upload", __name__)
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
@@ -25,7 +26,6 @@ def upload():
         return jsonify({"error": "File type not allowed. Use JPG, PNG or WEBP."}), 400
 
     try:
-        import time
         filename = f"{int(time.time() * 1000)}_{file.filename}"
         file_bytes = file.read()
         content_type = file.content_type or "image/jpeg"
