@@ -208,14 +208,14 @@ section {
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+  gap: 1.0rem;
 }
 
 .card {
   background: var(--warm-white);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.75rem;
+  padding: 1.15rem;
   box-shadow: var(--shadow);
   transition: transform 0.2s;
 }
