@@ -53,12 +53,20 @@
     }
 
     .faq-item.open .faq-answer {
-      max-height: 300px;
+      max-height: 600px;
       padding: 0 1.5rem 1.25rem;
     }
 
     .faq-item.open .faq-icon {
       transform: rotate(45deg);
+    }
+
+    .faq-answer ul {
+      margin: 0.75rem 0 0 1.25rem;
+    }
+
+    .faq-answer ul li {
+      margin-bottom: 0.4rem;
     }
   </style>
 </head>
@@ -79,7 +87,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          You can start by sending us a message through our Contact page or calling us directly. We'll schedule a free assessment visit to understand your loved one's needs and discuss the best care plan.
+          You can start by sending us a message through our Contact page or calling us directly. We'll schedule a brief assessment to understand your loved one's needs and recommend the best care plan.
         </div>
       </div>
 
@@ -89,7 +97,12 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          We currently serve residents in Quezon City and nearby areas in Metro Manila. Contact us to confirm if we cover your specific location.
+          While our homecare facility is in Marikina, we serve families from all across the Philippines and overseas. We specifically provide peace of mind to:
+          <ul>
+            <li><strong>Local Neighbors:</strong> Families in Marikina, Pasig and surrounding areas looking for "Professional Care with the Warmth of a Real Home".</li>
+            <li><strong>The "Sandwich Generation":</strong> Full-time professionals who need a safe, professional sanctuary for their aging parents.</li>
+            <li><strong>Global Filipinos:</strong> Overseas families who need a trusted, transparent partner to provide "Gold Standard" care for their loved ones.</li>
+          </ul>
         </div>
       </div>
 
@@ -99,7 +112,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          We offer flexible arrangements. There is no long-term lock-in — we work with families on a month-to-month basis, though longer commitments may come with discounts.
+          Minimum contract is one year.
         </div>
       </div>
 
@@ -109,7 +122,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          Yes. All our caregivers go through a thorough background check, reference verification, and in-house training before being assigned to any resident. Your loved one's safety is our top priority.
+          Yes. Our caregivers are trained, experienced, and carefully screened to ensure safe, professional, and compassionate care at all times.
         </div>
       </div>
 
@@ -119,7 +132,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          Absolutely. We encourage family involvement and visits. We believe that staying connected with family is an important part of a resident's emotional wellbeing.
+          We encourage family visits during visiting hours. Visiting hours are structured to ensure the comfort and routine of all residents, while keeping a warm and welcoming environment.
         </div>
       </div>
 
@@ -129,7 +142,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          Our caregivers are trained in basic first aid and emergency response. In case of a medical emergency, we immediately contact the family and coordinate with the nearest medical facility.
+          We follow a strict emergency protocol. Residents are immediately attended to, while family members are promptly informed. We have an on-call medical doctor. We will transport to a nearby hospital, if needed.
         </div>
       </div>
 
@@ -139,7 +152,79 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          Payments are made monthly and can be done via bank transfer or GCash. A detailed billing statement is provided every billing period.
+          We provide clear, transparent pricing with no hidden fees. Payment terms and schedules will be discussed during enrollment.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What services are included in your care?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Our services include 24/7 monitoring, assistance with daily living, medication management, home-cooked meals, and social activities for overall well-being.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Will my loved one have companionship and activities?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Yes. We promote social interaction and meaningful daily activities to support emotional and mental wellness.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can you accommodate special medical needs?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          We can accommodate certain medical needs with proper coordination. Oxygen support may be provided on a temporary basis — until the resident's condition stabilizes within a maximum of two (2) weeks. If the condition remains unstable beyond this period, we may advise transfer to a more appropriate medical facility for continued care.
+          <br/><br/>
+          Our home is equipped with standard beds. Should a medical bed be required, this will be provided by the resident's family. We'll discuss specific requirements during assessment.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How do you ensure safety and security?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Our home is designed for senior safety, with attentive staff, continuous monitoring, and structured routines.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can residents bring personal belongings?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          As space is limited, residents may bring a limited number of personal items to make their space feel familiar and comfortable.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do you offer trial stays or short-term care?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Short-term stays may be arranged depending on availability. Please contact us to discuss your needs.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How quickly can we move in?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Move-in timelines depend on availability and assessment, but we aim to accommodate families as soon as possible.
         </div>
       </div>
 
