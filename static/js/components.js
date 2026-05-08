@@ -46,20 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, { threshold: 0.1 });
 
-    const elementsToAnimate = document.querySelectorAll(
-      ".card, .pricing-card, section, .hero, .gallery-grid img, .section-title, .section-sub, .hero h1, .hero p, .btn"
-    );
-
-    // First, apply the initial hidden state to all elements
-    elementsToAnimate.forEach(el => {
-      el.classList.add("fade-in");
-    });
-
-    // Then, give the browser a tiny delay to render the hidden state
-    // before starting to observe and trigger animations
-    setTimeout(() => {
-      elementsToAnimate.forEach(el => {
-        observer.observe(el);
-      });
-    }, 50);
+  document.querySelectorAll(".card, .pricing-card, section, .hero").forEach(el => {
+    el.classList.add("fade-in");
+    observer.observe(el);
   });
+});

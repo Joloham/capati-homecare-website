@@ -12,7 +12,9 @@
   --text-light: #8A8A8A;
   --border: #E0D9D0;
   --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 28px rgba(0,0,0,0.12);
   --radius: 10px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -67,14 +69,6 @@ img {
   font-weight: 700;
   color: var(--sage-dark);
   letter-spacing: 0.02em;
-}
-
-#navbar-container .logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--sage-dark);
-  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
@@ -92,9 +86,27 @@ img {
   font-size: 0.95rem;
   font-weight: 400;
   color: var(--text-mid);
-  transition: color 0.2s;
   letter-spacing: 0.03em;
   white-space: nowrap;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+#navbar-container ul a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--sage-dark);
+  border-radius: 2px;
+  transition: width 0.3s var(--ease);
+}
+
+#navbar-container ul a:hover::after,
+#navbar-container ul a.active::after {
+  width: 100%;
 }
 
 #navbar-container ul a:hover,
@@ -107,13 +119,18 @@ img {
   color: white !important;
   padding: 0.5rem 1.2rem;
   border-radius: 50px;
-  transition: background 0.2s !important;
+  transition: background 0.2s, transform 0.2s var(--ease) !important;
   white-space: nowrap;
+}
+
+#navbar-container .nav-cta::after {
+  display: none;
 }
 
 #navbar-container .nav-cta:hover {
   background: var(--sage-dark) !important;
   color: white !important;
+  transform: translateY(-1px);
 }
 
 /* ── FOOTER ── */
@@ -135,6 +152,21 @@ img {
   background: linear-gradient(135deg, #e8f0e9 0%, #f5ede4 100%);
   padding: 5rem 2.5rem;
   text-align: center;
+}
+
+.hero-content {
+  animation: heroEntrance 0.9s var(--ease) both;
+}
+
+@keyframes heroEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero h1 {
@@ -162,7 +194,7 @@ img {
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease);
   border: none;
 }
 
@@ -173,6 +205,8 @@ img {
 
 .btn-primary:hover {
   background: var(--sage-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(92,122,96,0.3);
 }
 
 .btn-secondary {
@@ -185,6 +219,7 @@ img {
 .btn-secondary:hover {
   background: var(--sage);
   color: white;
+  transform: translateY(-2px);
 }
 
 /* ── SECTIONS ── */
@@ -228,11 +263,12 @@ section {
   border-radius: var(--radius);
   padding: 1.15rem;
   box-shadow: var(--shadow);
-  transition: transform 0.2s;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 
 .card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
 }
 
 .card-icon {
@@ -263,11 +299,12 @@ section {
   height: 200px;
   object-fit: cover;
   border-radius: var(--radius);
-  transition: opacity 0.2s;
+  transition: opacity 0.3s, transform 0.3s var(--ease);
 }
 
 .gallery-grid img:hover {
   opacity: 0.85;
+  transform: scale(1.02);
 }
 
 /* ── CONTACT FORM ── */
@@ -293,13 +330,14 @@ section {
   font-size: 0.95rem;
   background: var(--warm-white);
   color: var(--text-dark);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.15);
 }
 
 .form-group textarea {
@@ -331,31 +369,12 @@ section {
   padding: 2rem;
   text-align: center;
   box-shadow: var(--shadow);
-  transition: transform 0.2s;
-}
-
-.pricing-card.featured {
-  border-color: var(--sage);
-  position: relative;
-}
-
-.pricing-card.featured::before {
-  content: "Most Popular";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--sage);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.2rem 1rem;
-  border-radius: 50px;
-  letter-spacing: 0.05em;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 
 .pricing-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
 }
 
 .pricing-card h3 {
@@ -412,6 +431,7 @@ section {
   width: 100%;
   max-width: 420px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+  animation: heroEntrance 0.6s var(--ease) both;
 }
 
 .admin-box h2 {
@@ -445,12 +465,13 @@ section {
   padding: 3rem;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
   margin-bottom: 1.5rem;
 }
 
 .upload-zone:hover {
   border-color: var(--sage);
+  background: rgba(122,158,126,0.04);
 }
 
 .upload-zone p {
@@ -483,7 +504,7 @@ section {
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
   will-change: opacity, transform;
 }
 
@@ -492,6 +513,13 @@ section {
   transform: translateY(0);
 }
 
+/* Staggered card animations */
+.card-grid .card:nth-child(1) { transition-delay: 0.05s; }
+.card-grid .card:nth-child(2) { transition-delay: 0.1s; }
+.card-grid .card:nth-child(3) { transition-delay: 0.15s; }
+.card-grid .card:nth-child(4) { transition-delay: 0.2s; }
+.card-grid .card:nth-child(5) { transition-delay: 0.25s; }
+.card-grid .card:nth-child(6) { transition-delay: 0.3s; }
 
 /* ── HAMBURGER ── */
 .nav-toggle {
@@ -510,7 +538,7 @@ section {
   height: 2px;
   background: var(--text-dark);
   border-radius: 2px;
-  transition: all 0.3s;
+  transition: all 0.3s var(--ease);
 }
 
 /* ── RESPONSIVE ── */
@@ -523,7 +551,6 @@ section {
 }
 
 @media (max-width: 910px) {
-  /* Mobile Navbar */
   #navbar-container nav {
     padding: 1rem 1.25rem;
     flex-wrap: wrap;
@@ -534,7 +561,6 @@ section {
     display: flex;
   }
 
-  /* Hamburger turning into an X */
   .nav-toggle.open span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -550,13 +576,10 @@ section {
     flex-direction: column;
     width: 100%;
     gap: 0;
-
-    /* Animation properties for smooth slide-down */
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-
+    transition: all 0.5s var(--ease);
     margin-top: 0;
     border-top: 1px solid transparent;
     padding-top: 0;
@@ -576,6 +599,10 @@ section {
     font-size: 1rem;
   }
 
+  #navbar-container ul a::after {
+    display: none;
+  }
+
   #navbar-container .nav-cta {
     display: inline-block;
     margin-top: 0.5rem;
@@ -584,7 +611,6 @@ section {
 }
 
 @media (max-width: 768px) {
-  /* Footer */
   .footer-inner {
     flex-direction: column;
     align-items: flex-start !important;
@@ -594,7 +620,6 @@ section {
     text-align: left !important;
   }
 
-  /* Hero */
   .hero {
     padding: 3rem 1.25rem;
   }
@@ -618,7 +643,6 @@ section {
     margin: 0.4rem auto 0;
   }
 
-  /* Sections */
   section {
     padding: 2.5rem 1.25rem;
   }
@@ -627,26 +651,18 @@ section {
     font-size: 1.6rem;
   }
 
-  /* Cards */
   .card-grid {
     grid-template-columns: 1fr;
   }
 
-  /* Pricing */
   .pricing-grid {
     grid-template-columns: 1fr;
   }
 
-  .pricing-card.featured::before {
-    font-size: 0.7rem;
-  }
-
-  /* Gallery */
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Dashboard */
   .dashboard-header {
     padding: 1rem;
     flex-direction: column;
@@ -667,7 +683,6 @@ section {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Contact page */
   .contact-grid {
     grid-template-columns: 1fr !important;
   }
@@ -676,7 +691,6 @@ section {
     grid-template-columns: 1fr !important;
   }
 
-  /* Admin login */
   .admin-wrapper {
     padding: 1.25rem;
     align-items: flex-start;
