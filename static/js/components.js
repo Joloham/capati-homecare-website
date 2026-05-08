@@ -18,31 +18,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const yearEl = document.getElementById("footer-year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  const elementsToAnimate = document.querySelectorAll(
-    ".card, .pricing-card, section, .hero, .gallery-grid img, .section-title, .section-sub, .hero h1, .hero p, .btn"
-  );
+  const animatableSelector =
+    ".section-label, .section-title, .section-sub, .card, .pricing-card, .gallery-grid img";
 
-  if (!("IntersectionObserver" in window)) {
-    elementsToAnimate.forEach(el => el.classList.add("visible"));
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!("IntersectionObserver" in window) || prefersReducedMotion) {
     return;
   }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+
+      entry.target.classList.add("visible");
+      entry.target.addEventListener("transitionend", () => {
+        entry.target.classList.remove("fade-in");
+        entry.target.classList.remove("visible");
+        entry.target.style.transitionDelay = "";
+      }, { once: true });
+
+      observer.unobserve(entry.target);
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.15, rootMargin: "0px 0px -10% 0px" });
 
-  elementsToAnimate.forEach(el => {
-    el.classList.add("fade-in");
-  });
+  const shouldAnimate = (el) =>
+    el.getBoundingClientRect().top >= window.innerHeight * 0.9;
 
-  setTimeout(() => {
-    elementsToAnimate.forEach(el => {
+  const applyStagger = (elements, step = 70, maxDelay = 350) => {
+    let visibleIndex = 0;
+    elements.forEach(el => {
+      if (!shouldAnimate(el)) return;
+
+      const delay = Math.min(visibleIndex * step, maxDelay);
+      visibleIndex += 1;
+
+      el.classList.add("fade-in");
+      el.style.transitionDelay = `${delay}ms`;
       observer.observe(el);
     });
-  }, 50);
+  };
+
+  const grouped = new Set();
+  document.querySelectorAll("section").forEach(section => {
+    const items = Array.from(section.querySelectorAll(animatableSelector));
+    if (!items.length) return;
+
+    items.forEach(el => grouped.add(el));
+    applyStagger(items);
+  });
+
+  const leftovers = Array.from(document.querySelectorAll(animatableSelector))
+    .filter(el => !grouped.has(el));
+  if (leftovers.length) {
+    applyStagger(leftovers, 60, 300);
+  }
 });
