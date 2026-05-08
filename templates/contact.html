@@ -9,7 +9,10 @@
 </head>
 <body>
 
-  <div id="navbar-container"></div>
+    <div id="navbar-container">
+      {% include 'components/navbar.html' %}
+    </div>
+
 
   <section>
     <p class="section-label">Get in Touch</p>
@@ -79,7 +82,10 @@
     </div>
   </section>
 
-  <div id="footer-container"></div>
+  <div id="footer-container">
+    {% include 'components/footer.html' %}
+  </div>
+
   <script src="/static/js/components.js"></script>
   <script src="/static/js/contact.js"></script>
 </body>

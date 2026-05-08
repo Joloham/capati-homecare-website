@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, render_template
 from backend.config import FLASK_SECRET_KEY
 from backend.routes.upload import upload_bp
 from backend.routes.contact import contact_bp
@@ -26,15 +26,15 @@ def favicon():
 # Serve HTML pages
 @app.route("/")
 def index():
-    return send_from_directory(os.path.join(BASE_DIR, "templates"), "index.html")
+    return render_template("index.html")
 
 @app.route("/<page>.html")
 def serve_page(page):
-    return send_from_directory(os.path.join(BASE_DIR, "templates"), f"{page}.html")
+    return render_template(f"{page}.html")
 
 @app.route("/admin/<page>.html")
 def serve_admin_page(page):
-    return send_from_directory(os.path.join(BASE_DIR, "templates", "admin"), f"{page}.html")
+    return render_template(f"admin/{page}.html")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
