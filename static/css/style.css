@@ -308,9 +308,18 @@ section {
 }
 
 /* ── CONTACT FORM ── */
-.form-group {
-  margin-bottom: 1.25rem;
+.contact-grid {
+  max-width: 1100px !important;
 }
+
+.contact-grid > div {
+  margin-top: 0 !important;
+}
+
+.form-group {
+  margin-bottom: 2.25rem;
+}
+
 
 .form-group label {
   display: block;
