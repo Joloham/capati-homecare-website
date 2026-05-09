@@ -2,7 +2,7 @@ const LIMITS = {
   name: 50,
   phone: 20,
   email: 50,
-  message: 500
+  message: 1000
 };
 
 async function submitContact() {
