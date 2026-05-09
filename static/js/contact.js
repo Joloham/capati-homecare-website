@@ -1,3 +1,10 @@
+const LIMITS = {
+  name: 50,
+  phone: 20,
+  email: 50,
+  message: 500
+};
+
 async function submitContact() {
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
@@ -11,6 +18,30 @@ async function submitContact() {
 
   if (!name || !email || !message) {
     msg.textContent = "Please fill in all required fields.";
+    msg.classList.add("error");
+    return;
+  }
+
+  if (name.length > LIMITS.name) {
+    msg.textContent = `Name must be ${LIMITS.name} characters or less.`;
+    msg.classList.add("error");
+    return;
+  }
+
+  if (phone && phone.length > LIMITS.phone) {
+    msg.textContent = `Phone must be ${LIMITS.phone} characters or less.`;
+    msg.classList.add("error");
+    return;
+  }
+
+  if (email.length > LIMITS.email) {
+    msg.textContent = `Email must be ${LIMITS.email} characters or less.`;
+    msg.classList.add("error");
+    return;
+  }
+
+  if (message.length > LIMITS.message) {
+    msg.textContent = `Message must be ${LIMITS.message} characters or less.`;
     msg.classList.add("error");
     return;
   }
@@ -30,6 +61,7 @@ async function submitContact() {
       document.getElementById("phone").value = "";
       document.getElementById("email").value = "";
       document.getElementById("message").value = "";
+      updateCounter();
 
       let seconds = 30;
       btn.disabled = true;
@@ -57,3 +89,17 @@ async function submitContact() {
     msg.classList.add("error");
   }
 }
+
+function updateCounter() {
+  const message = document.getElementById("message");
+  const counter = document.getElementById("msg-counter");
+  if (!message || !counter) return;
+  const remaining = LIMITS.message - message.value.length;
+  counter.textContent = `${message.value.length} / ${LIMITS.message}`;
+  counter.style.color = remaining < 50 ? "var(--terracotta)" : "var(--text-light)";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const message = document.getElementById("message");
+  if (message) message.addEventListener("input", updateCounter);
+});
