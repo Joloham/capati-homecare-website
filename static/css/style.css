@@ -32,6 +32,17 @@ body {
   background-color: var(--cream);
   color: var(--text-dark);
   line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body > * {
+  width: 100%;
+}
+
+#footer-container {
+  margin-top: 4rem;
 }
 
 h1, h2, h3, h4 {
@@ -140,7 +151,6 @@ img {
   text-align: center;
   padding: 2rem;
   font-size: 0.875rem;
-  margin-top: 14rem;
 }
 
 #footer-container footer a {
