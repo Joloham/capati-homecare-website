@@ -67,13 +67,13 @@ img {
   font-family: 'Playfair Display', serif;
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--sage-dark);
+  color: #9B7226;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 #navbar-container .logo span {
-  color: var(--terracotta);
+  color: var(--sage-dark);
 }
 
 #navbar-container ul {
