@@ -28,11 +28,11 @@ def favicon():
 def index():
     return render_template("index.html")
 
-@app.route("/<page>.html")
+@app.route("/<page>")
 def serve_page(page):
     return render_template(f"{page}.html")
 
-@app.route("/admin/<page>.html")
+@app.route("/admin/<page>")
 def serve_admin_page(page):
     return render_template(f"admin/{page}.html")
 

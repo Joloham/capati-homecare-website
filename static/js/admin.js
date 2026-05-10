@@ -33,7 +33,7 @@ async function adminLogin() {
     if (res.ok && data.access_token) {
       localStorage.setItem("sb_access_token", data.access_token);
       localStorage.setItem("sb_user_email", data.user.email);
-      window.location.href = "/admin/dashboard.html";
+      window.location.href = "/admin/dashboard";
     } else {
       msg.textContent = data.error_description || "Invalid credentials.";
       msg.classList.add("error");
@@ -50,7 +50,7 @@ async function adminLogin() {
 function requireAuth() {
   const token = localStorage.getItem("sb_access_token");
   if (!token) {
-    window.location.href = "/admin/login.html";
+    window.location.href = "/admin/login";
   }
   return token;
 }
@@ -61,7 +61,7 @@ function getAdminEmail() {
 
 function adminLogout() {
   localStorage.clear();
-  window.location.href = "/admin/login.html";
+  window.location.href = "/admin/login";
 }
 
 // ── STAGING ──
