@@ -516,8 +516,8 @@ section {
 
 /* ── ANIMATIONS ── */
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .fade-in {
@@ -611,7 +611,22 @@ section {
   }
 
   #navbar-container ul a::after {
-    display: none;
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--sage-dark);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease);
+  }
+
+  #navbar-container ul a:hover::after,
+  #navbar-container ul a.active::after {
+    transform: scaleX(1);
   }
 
   #navbar-container .nav-cta {

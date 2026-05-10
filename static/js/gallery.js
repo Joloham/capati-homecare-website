@@ -4,7 +4,9 @@ const BUCKET = "gallery";
 
 function showSkeleton(container, count = 6) {
   container.innerHTML = Array(count).fill(`
-    <div style="width:100%;height:200px;border-radius:var(--radius);background:linear-gradient(90deg,#e8e0d8 25%,#f0ebe4 50%,#e8e0d8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+    <div style="width:100%;height:200px;border-radius:var(--radius);background:#e8e0d8;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.4) 50%,transparent 100%);animation:shimmer 1.4s infinite;"></div>
+    </div>
   `).join("");
 }
 
