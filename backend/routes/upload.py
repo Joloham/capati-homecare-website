@@ -1,16 +1,30 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
+from PIL import Image
 import time
+import io
 
 upload_bp = Blueprint("upload", __name__)
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 BUCKET_NAME = "gallery"
+JPEG_QUALITY = 82
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def compress_image(file):
+    img = Image.open(file)
+
+    if img.mode in ("RGBA", "P", "LA"):
+        img = img.convert("RGB")
+
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+    buffer.seek(0)
+    return buffer
 
 @upload_bp.route("/upload", methods=["POST"])
 def upload():
@@ -26,14 +40,13 @@ def upload():
         return jsonify({"error": "File type not allowed. Use JPG, PNG or WEBP."}), 400
 
     try:
-        filename = f"{int(time.time() * 1000)}_{file.filename}"
-        file_bytes = file.read()
-        content_type = file.content_type or "image/jpeg"
+        compressed = compress_image(file)
+        filename = f"{int(time.time() * 1000)}_{file.filename.rsplit('.', 1)[0]}.jpg"
 
         supabase.storage.from_(BUCKET_NAME).upload(
             path=filename,
-            file=file_bytes,
-            file_options={"content-type": content_type}
+            file=compressed.read(),
+            file_options={"content-type": "image/jpeg"}
         )
 
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
