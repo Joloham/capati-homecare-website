@@ -48,5 +48,9 @@ def serve_page(page):
 def serve_admin_page(page):
     return render_template(f"admin/{page}.html")
 
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(BASE_DIR, "robots.txt")
+
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=5000)
