@@ -1,5 +1,5 @@
 from flask import Flask, send_from_directory, render_template, jsonify
-from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY
+from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from backend.routes.upload import upload_bp
 from backend.routes.contact import contact_bp
 from supabase import create_client
@@ -20,6 +20,14 @@ app.register_blueprint(upload_bp, url_prefix="/api")
 app.register_blueprint(contact_bp, url_prefix="/api")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
+
+# Public config for frontend JS
+@app.route("/api/config")
+def config():
+    return jsonify({
+        "supabase_url": SUPABASE_URL,
+        "supabase_key": SUPABASE_PUBLISHABLE_KEY
+    })
 
 # Keep-alive ping for cron-job.org
 @app.route("/ping")

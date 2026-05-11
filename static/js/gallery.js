@@ -1,11 +1,26 @@
-const SUPABASE_URL = "https://izhqaqpsuffkhkegwbbg.supabase.co";
-const SUPABASE_KEY = "sb_publishable_mJnBA_xMaqIxfr3XgiJZeQ_pSfyqMJ-";
+let SUPABASE_URL = null;
+let SUPABASE_KEY = null;
 const BUCKET = "gallery";
+
+async function loadConfig() {
+  if (SUPABASE_URL) return;
+  const res = await fetch("/api/config");
+  const data = await res.json();
+  SUPABASE_URL = data.supabase_url;
+  SUPABASE_KEY = data.supabase_key;
+}
 
 function showSkeleton(container, count = 6) {
   container.innerHTML = Array(count).fill(`
-    <div style="width:100%;height:200px;border-radius:var(--radius);background:#e8e0d8;position:relative;overflow:hidden;">
-      <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.4) 50%,transparent 100%);animation:shimmer 1.4s infinite;"></div>
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div style="width:100%;height:200px;position:relative;overflow:hidden;background:#e8e0d8;">
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.4) 50%,transparent 100%);animation:shimmer 1.4s infinite;"></div>
+      </div>
+      <div style="padding:0.6rem 0.85rem;">
+        <div style="height:12px;background:#e8e0d8;border-radius:4px;width:60%;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.4) 50%,transparent 100%);animation:shimmer 1.4s infinite;"></div>
+        </div>
+      </div>
     </div>
   `).join("");
 }
@@ -26,40 +41,34 @@ function closeLightbox() {
 async function loadGallery() {
   const container = document.getElementById("gallery");
   showSkeleton(container);
+  await loadConfig();
 
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`,
+      `${SUPABASE_URL}/rest/v1/gallery?order=created_at.desc`,
       {
-        method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "apikey": SUPABASE_KEY
-        },
-        body: JSON.stringify({ limit: 100, offset: 0, prefix: "" })
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    const files = await res.json();
+    const rows = await res.json();
 
-    if (!Array.isArray(files) || files.length === 0) {
+    if (!Array.isArray(rows) || rows.length === 0) {
       container.innerHTML = `<p style="color: var(--text-light); font-size: 0.9rem;">No photos yet.</p>`;
       return;
     }
 
-    container.innerHTML = files
-      .filter(f => f.name)
-      .sort((a, b) => {
-        const tsA = parseInt(a.name.split("_")[0]) || 0;
-        const tsB = parseInt(b.name.split("_")[0]) || 0;
-        return tsB - tsA;
-      })
-      .map(f => {
-        const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${f.name}`;
-        return `<img src="${url}" alt="" loading="lazy" style="cursor:pointer;" onclick="openLightbox('${url}')"/>`;
-      })
-      .join("");
+    container.innerHTML = rows.map(row => {
+      const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${row.filename}`;
+      return `
+        <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;" onclick="openLightbox('${url}')" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)'">
+          <img src="${url}" alt="" loading="lazy" style="width:100%;height:200px;object-fit:cover;display:block;"/>
+          ${row.caption ? `<div style="padding:0.6rem 0.85rem;"><p style="font-size:0.85rem;color:var(--text-mid);">${row.caption}</p></div>` : ""}
+        </div>`;
+    }).join("");
 
   } catch (err) {
     console.error(err);

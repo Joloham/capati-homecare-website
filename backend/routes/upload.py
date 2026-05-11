@@ -41,7 +41,7 @@ def upload():
 
     try:
         compressed = compress_image(file)
-        filename = f"{int(time.time() * 1000)}_{file.filename.rsplit('.', 1)[0]}.jpg"
+        filename = f"{int(time.time() * 1000)}_{(file.filename or 'image').rsplit('.', 1)[0]}.jpg"
 
         supabase.storage.from_(BUCKET_NAME).upload(
             path=filename,
@@ -50,6 +50,13 @@ def upload():
         )
 
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
+
+        # Insert row into gallery table
+        supabase.table("gallery").insert({
+            "filename": filename,
+            "caption": None
+        }).execute()
+
         return jsonify({"url": public_url, "filename": filename}), 200
 
     except Exception as e:
