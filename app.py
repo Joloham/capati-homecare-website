@@ -5,6 +5,7 @@ from backend.routes.contact import contact_bp
 from supabase import create_client
 import os
 
+VALID_PAGES = {"about", "our-story", "services", "gallery", "pricing", "faq", "contact"}
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(
@@ -50,7 +51,13 @@ def index():
 
 @app.route("/<page>")
 def serve_page(page):
+    if page not in VALID_PAGES:
+        return render_template("404.html"), 404
     return render_template(f"{page}.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html"), 404
 
 @app.route("/admin/<page>")
 def serve_admin_page(page):
