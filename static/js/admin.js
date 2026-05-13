@@ -1,4 +1,13 @@
 let SUPABASE_URL = null;
+
+// ── XSS SANITIZATION ──
+function sanitize(str) {
+  if (!str) return "";
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 let SUPABASE_KEY = null;
 let BUCKET = "gallery";
 
@@ -375,13 +384,13 @@ async function loadMessages(append = false) {
         <div class="msg-name-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
           <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;">
             <span class="unread-dot" style="width:8px;height:8px;background:var(--sage);border-radius:50%;display:${isRead ? "none" : "inline-block"};flex-shrink:0;"></span>
-            <strong style="font-family:'Playfair Display',serif;font-size:1rem;">${m.name}</strong>
+            <strong style="font-family:'Playfair Display',serif;font-size:1rem;">${sanitize(m.name)}</strong>
           </div>
           <span style="font-size:0.8rem;color:var(--text-light);">${date}</span>
         </div>
-        <a href="mailto:${m.email}" style="font-size:0.875rem;color:var(--sage-dark);">${m.email}</a>
-        ${m.phone ? `<p style="font-size:0.875rem;color:var(--text-mid);margin-top:0.2rem;">📞 ${m.phone}</p>` : ""}
-        <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word;">${m.message}</p>
+        <a href="mailto:${sanitize(m.email)}" style="font-size:0.875rem;color:var(--sage-dark);">${sanitize(m.email)}</a>
+        ${m.phone ? `<p style="font-size:0.875rem;color:var(--text-mid);margin-top:0.2rem;">📞 ${sanitize(m.phone)}</p>` : ""}
+        <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word;">${sanitize(m.message)}</p>
         <div style="margin-top:1rem;display:flex;gap:0.75rem;">
           <button class="toggle-read-btn" onclick="toggleRead(${m.id}, ${isRead})" style="font-size:0.8rem;padding:0.3rem 0.85rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">
             ${isRead ? "Mark Unread" : "Mark Read"}
