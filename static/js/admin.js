@@ -1,6 +1,10 @@
 let SUPABASE_URL = null;
+let SUPABASE_KEY = null;
+let BUCKET = "gallery";
 
-// ── XSS SANITIZATION ──
+
+/* ── XSS SANITIZATION ── */
+
 function sanitize(str) {
   if (!str) return "";
   const div = document.createElement("div");
@@ -8,8 +12,8 @@ function sanitize(str) {
   return div.innerHTML;
 }
 
-let SUPABASE_KEY = null;
-let BUCKET = "gallery";
+
+/* ── CONFIG ── */
 
 async function loadConfig() {
   if (SUPABASE_URL) return;
@@ -19,13 +23,15 @@ async function loadConfig() {
   SUPABASE_KEY = data.supabase_key;
 }
 
-// ── AUTH ──
+
+/* ── AUTH ── */
 
 async function adminLogin() {
   await loadConfig();
-  const email = document.getElementById("email").value.trim();
+
+  const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  const msg = document.getElementById("login-msg");
+  const msg      = document.getElementById("login-msg");
 
   msg.className = "form-message";
   msg.textContent = "";
@@ -62,7 +68,8 @@ async function adminLogin() {
   }
 }
 
-// ── SESSION GUARD ──
+
+/* ── SESSION GUARD ── */
 
 function requireAuth() {
   const token = localStorage.getItem("sb_access_token");
@@ -81,7 +88,8 @@ function adminLogout() {
   window.location.href = "/admin/login";
 }
 
-// ── STAGING ──
+
+/* ── STAGING ── */
 
 let stagedFiles = [];
 
@@ -92,9 +100,9 @@ function stageFiles(files) {
 }
 
 function renderStaging() {
-  const area = document.getElementById("staging-area");
+  const area     = document.getElementById("staging-area");
   const previews = document.getElementById("staging-previews");
-  const count = document.getElementById("staging-count");
+  const count    = document.getElementById("staging-count");
 
   if (stagedFiles.length === 0) {
     area.style.display = "none";
@@ -105,14 +113,17 @@ function renderStaging() {
   count.textContent = `${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""} selected`;
 
   previews.innerHTML = "";
+
   stagedFiles.forEach((file, index) => {
-    const url = URL.createObjectURL(file);
+    const url     = URL.createObjectURL(file);
     const wrapper = document.createElement("div");
+
     wrapper.style.position = "relative";
     wrapper.innerHTML = `
       <img src="${url}" style="width:100%;height:130px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);"/>
       <button onclick="removeStagedFile(${index})" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.8rem;">✕</button>
       <p style="font-size:0.7rem;color:var(--text-light);margin-top:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.name}</p>`;
+
     previews.appendChild(wrapper);
   });
 }
@@ -131,14 +142,15 @@ function clearStaging() {
 
 async function confirmUpload() {
   if (stagedFiles.length === 0) return;
-  const statusEl = document.getElementById("upload-status");
+
+  const statusEl       = document.getElementById("upload-status");
   const existingPhotos = document.getElementById("existing-photos");
 
   statusEl.textContent = `Uploading ${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""}...`;
 
   let successCount = 0;
-
   const token = requireAuth();
+
   for (const file of stagedFiles) {
     const formData = new FormData();
     formData.append("file", file);
@@ -157,10 +169,11 @@ async function confirmUpload() {
       if (res.ok) {
         successCount++;
         const publicUrl = data.url;
+        const wrapper   = createPhotoCard(publicUrl, data.filename, null);
 
-        const wrapper = createPhotoCard(publicUrl, data.filename, null);
         const placeholder = existingPhotos.querySelector("p");
         if (placeholder) placeholder.remove();
+
         existingPhotos.prepend(wrapper);
       } else {
         statusEl.textContent = `Failed to upload ${file.name}: ${data.error || "unknown error"}`;
@@ -175,12 +188,15 @@ async function confirmUpload() {
   clearStaging();
 }
 
-// ── PHOTO CARD ──
+
+/* ── PHOTO CARD ── */
 
 function createPhotoCard(url, filename, caption) {
   const wrapper = document.createElement("div");
+
   wrapper.dataset.filename = filename;
   wrapper.style.cssText = "position:relative;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;";
+
   wrapper.innerHTML = `
     <img src="${url}" alt="" style="width:100%;height:130px;object-fit:cover;cursor:pointer;" onclick="openLightbox('${url}')"/>
     <div style="padding:0.5rem 0.6rem;">
@@ -190,17 +206,20 @@ function createPhotoCard(url, filename, caption) {
         <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>
       </div>
     </div>`;
+
   return wrapper;
 }
 
-// ── EDIT CAPTION ──
+
+/* ── EDIT CAPTION ── */
 
 function editCaption(btn, filename) {
-  const card = btn.closest("div[data-filename]");
-  const captionEl = card.querySelector(".photo-caption");
+  const card           = btn.closest("div[data-filename]");
+  const captionEl      = card.querySelector(".photo-caption");
   const currentCaption = captionEl.dataset.caption || "";
 
-  captionEl.innerHTML = `<input type="text" value="${currentCaption}" maxlength="100" style="width:100%;font-size:0.8rem;padding:0.25rem 0.4rem;border:1px solid var(--sage);border-radius:6px;font-family:'Lato',sans-serif;"/>`;
+  captionEl.innerHTML = `
+    <input type="text" value="${currentCaption}" maxlength="100" style="width:100%;font-size:0.8rem;padding:0.25rem 0.4rem;border:1px solid var(--sage);border-radius:6px;font-family:'Lato',sans-serif;"/>`;
 
   const actionDiv = btn.closest("div");
   actionDiv.innerHTML = `
@@ -210,9 +229,10 @@ function editCaption(btn, filename) {
 
 async function saveCaption(btn, filename) {
   await loadConfig();
-  const token = requireAuth();
-  const card = btn.closest("div[data-filename]");
-  const input = card.querySelector("input");
+
+  const token   = requireAuth();
+  const card    = btn.closest("div[data-filename]");
+  const input   = card.querySelector("input");
   const caption = input.value.trim();
 
   try {
@@ -242,8 +262,9 @@ async function saveCaption(btn, filename) {
 }
 
 function cancelEdit(btn, filename, originalCaption) {
-  const card = btn.closest("div[data-filename]");
+  const card      = btn.closest("div[data-filename]");
   const captionEl = card.querySelector(".photo-caption");
+
   captionEl.innerHTML = originalCaption || "<span style='color:var(--text-light);font-style:italic;'>No caption</span>";
 
   const actionDiv = btn.closest("div");
@@ -252,11 +273,13 @@ function cancelEdit(btn, filename, originalCaption) {
     <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>`;
 }
 
-// ── LOAD EXISTING GALLERY ON DASHBOARD ──
+
+/* ── DASHBOARD GALLERY ── */
 
 async function loadDashboardGallery() {
   await loadConfig();
-  const token = requireAuth();
+
+  const token     = requireAuth();
   const container = document.getElementById("existing-photos");
   if (!container) return;
 
@@ -277,8 +300,9 @@ async function loadDashboardGallery() {
     }
 
     container.innerHTML = "";
+
     rows.forEach(row => {
-      const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${row.filename}`;
+      const url  = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${row.filename}`;
       const card = createPhotoCard(url, row.filename, row.caption);
       container.appendChild(card);
     });
@@ -288,10 +312,12 @@ async function loadDashboardGallery() {
   }
 }
 
-// ── DELETE PHOTO ──
+
+/* ── DELETE PHOTO ── */
 
 async function deletePhoto(filename, btn) {
   await loadConfig();
+
   const token = requireAuth();
   if (!confirm(`Delete this photo?`)) return;
 
@@ -328,16 +354,18 @@ async function deletePhoto(filename, btn) {
   }
 }
 
-// ── MESSAGES ──
+
+/* ── MESSAGES ── */
 
 const MSG_PAGE_SIZE = 5;
 let msgOffset = 0;
-let msgTotal = 0;
+let msgTotal  = 0;
 
 async function loadMessages(append = false) {
   await loadConfig();
-  const token = requireAuth();
-  const container = document.getElementById("messages-list");
+
+  const token       = requireAuth();
+  const container   = document.getElementById("messages-list");
   const loadMoreBtn = document.getElementById("load-more-btn");
   if (!container) return;
 
@@ -374,12 +402,21 @@ async function loadMessages(append = false) {
 
     messages.forEach(m => {
       const date = m.created_at
-        ? new Date(m.created_at).toLocaleString("en-PH", { dateStyle: "medium", timeStyle: "short" })
+        ? new Date(m.created_at).toLocaleString("en-PH", {
+            dateStyle: "medium",
+            timeStyle: "short"
+          })
         : "—";
+
       const isRead = m.read === true;
-      const card = document.createElement("div");
+      const card   = document.createElement("div");
+
       card.id = `msg-${m.id}`;
-      card.style.cssText = `background:${isRead ? "var(--cream)" : "var(--warm-white)"};border:1px solid ${isRead ? "var(--border)" : "var(--sage)"};border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;opacity:${isRead ? "0.5" : "1"};`;
+      card.style.cssText = "background:" + (isRead ? "var(--cream)" : "var(--warm-white)") +
+                           ";border:1px solid " + (isRead ? "var(--border)" : "var(--sage)") +
+                           ";border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;" +
+                           "opacity:" + (isRead ? "0.5" : "1") + ";";
+
       card.innerHTML = `
         <div class="msg-name-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
           <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;">
@@ -399,6 +436,7 @@ async function loadMessages(append = false) {
             Delete
           </button>
         </div>`;
+
       container.appendChild(card);
     });
 
@@ -416,7 +454,9 @@ async function loadMessages(append = false) {
 
 async function toggleRead(id, currentlyRead) {
   await loadConfig();
+
   const token = requireAuth();
+
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
       method: "PATCH",
@@ -435,9 +475,10 @@ async function toggleRead(id, currentlyRead) {
     if (!card) return;
 
     const nowRead = !currentlyRead;
-    card.style.background = nowRead ? "var(--cream)" : "var(--warm-white)";
-    card.style.borderColor = nowRead ? "var(--border)" : "var(--sage)";
-    card.style.opacity = nowRead ? "0.5" : "1";
+
+    card.style.background   = nowRead ? "var(--cream)" : "var(--warm-white)";
+    card.style.borderColor    = nowRead ? "var(--border)" : "var(--sage)";
+    card.style.opacity        = nowRead ? "0.5" : "1";
 
     const dot = card.querySelector(".unread-dot");
     if (dot) dot.style.display = nowRead ? "none" : "inline-block";
@@ -455,8 +496,10 @@ async function toggleRead(id, currentlyRead) {
 
 async function deleteMessage(id) {
   await loadConfig();
+
   const token = requireAuth();
   if (!confirm("Delete this message?")) return;
+
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
       method: "DELETE",
@@ -465,12 +508,18 @@ async function deleteMessage(id) {
         "apikey": SUPABASE_KEY
       }
     });
+
     const card = document.getElementById(`msg-${id}`);
     if (card) card.remove();
+
     msgOffset = Math.max(0, msgOffset - 1);
-    msgTotal = Math.max(0, msgTotal - 1);
+    msgTotal  = Math.max(0, msgTotal - 1);
+
     const loadMoreBtn = document.getElementById("load-more-btn");
-    if (loadMoreBtn) loadMoreBtn.style.display = msgOffset < msgTotal ? "block" : "none";
+    if (loadMoreBtn) {
+      loadMoreBtn.style.display = msgOffset < msgTotal ? "block" : "none";
+    }
+
   } catch (err) {
     console.error(err);
   }

@@ -1,19 +1,22 @@
 const LIMITS = {
-  name: 50,
-  phone: 20,
-  email: 50,
+  name:    50,
+  phone:   20,
+  email:   50,
   message: 1000
 };
 
-async function submitContact() {
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const message = document.getElementById("message").value.trim();
-  const msg = document.getElementById("form-msg");
-  const btn = document.querySelector("button[onclick='submitContact()']");
 
-  msg.className = "form-message";
+/* ── FORM SUBMISSION ── */
+
+async function submitContact() {
+  const name    = document.getElementById("name").value.trim();
+  const phone   = document.getElementById("phone").value.trim();
+  const email   = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+  const msg     = document.getElementById("form-msg");
+  const btn     = document.querySelector("button[onclick='submitContact()']");
+
+  msg.className   = "form-message";
   msg.textContent = "";
 
   if (!name || !email || !message) {
@@ -57,26 +60,29 @@ async function submitContact() {
 
     if (res.ok) {
       msg.textContent = "Message sent! We'll get back to you soon.";
-      document.getElementById("name").value = "";
-      document.getElementById("phone").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("message").value = "";
+
+      document.getElementById("name").value    = "";
+      document.getElementById("phone").value     = "";
+      document.getElementById("email").value     = "";
+      document.getElementById("message").value   = "";
+
       updateCounter();
 
       let seconds = 60;
       btn.disabled = true;
-      btn.style.opacity = "0.6";
-      btn.style.cursor = "not-allowed";
+      btn.style.opacity  = "0.6";
+      btn.style.cursor   = "not-allowed";
 
       const interval = setInterval(() => {
         btn.textContent = `Wait ${seconds}s`;
         seconds--;
+
         if (seconds < 0) {
           clearInterval(interval);
           btn.disabled = false;
           btn.style.opacity = "1";
-          btn.style.cursor = "pointer";
-          btn.textContent = "Send Message";
+          btn.style.cursor  = "pointer";
+          btn.textContent   = "Send Message";
         }
       }, 1000);
 
@@ -90,10 +96,14 @@ async function submitContact() {
   }
 }
 
+
+/* ── CHARACTER COUNTER ── */
+
 function updateCounter() {
   const message = document.getElementById("message");
   const counter = document.getElementById("msg-counter");
   if (!message || !counter) return;
+
   const remaining = LIMITS.message - message.value.length;
   counter.textContent = `${message.value.length} / ${LIMITS.message}`;
   counter.style.color = remaining < 50 ? "var(--terracotta)" : "var(--text-light)";

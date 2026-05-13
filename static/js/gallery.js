@@ -2,13 +2,21 @@ let SUPABASE_URL = null;
 let SUPABASE_KEY = null;
 const BUCKET = "gallery";
 
+
+/* ── CONFIG ── */
+
 async function loadConfig() {
   if (SUPABASE_URL) return;
-  const res = await fetch("/api/config");
+
+  const res  = await fetch("/api/config");
   const data = await res.json();
+
   SUPABASE_URL = data.supabase_url;
   SUPABASE_KEY = data.supabase_key;
 }
+
+
+/* ── SKELETON LOADER ── */
 
 function showSkeleton(container, count = 6) {
   container.innerHTML = Array(count).fill(`
@@ -25,6 +33,9 @@ function showSkeleton(container, count = 6) {
   `).join("");
 }
 
+
+/* ── LIGHTBOX ── */
+
 function openLightbox(url) {
   const lb = document.getElementById("lightbox");
   document.getElementById("lightbox-img").src = url;
@@ -38,8 +49,12 @@ function closeLightbox() {
   document.body.style.overflow = "";
 }
 
+
+/* ── GALLERY LOAD ── */
+
 async function loadGallery() {
   const container = document.getElementById("gallery");
+
   showSkeleton(container);
   await loadConfig();
 
@@ -75,6 +90,9 @@ async function loadGallery() {
     container.innerHTML = `<p style="color: var(--terracotta);">Failed to load gallery.</p>`;
   }
 }
+
+
+/* ── INIT ── */
 
 document.addEventListener("DOMContentLoaded", () => {
   loadGallery();
