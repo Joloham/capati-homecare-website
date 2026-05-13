@@ -17,6 +17,12 @@ LIMITS = {
 _rate_limit = {}
 RATE_LIMIT_SECONDS = 60
 
+def cleanup_rate_limit():
+    now = time.time()
+    expired = [ip for ip, t in _rate_limit.items() if now - t > RATE_LIMIT_SECONDS]
+    for ip in expired:
+        del _rate_limit[ip]
+
 def is_rate_limited(ip):
     now = time.time()
     last = _rate_limit.get(ip, 0)
@@ -27,6 +33,7 @@ def is_rate_limited(ip):
 
 @contact_bp.route("/contact", methods=["POST"])
 def contact():
+    cleanup_rate_limit()
     ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
 
     if is_rate_limited(ip):
