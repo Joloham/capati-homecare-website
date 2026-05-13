@@ -36,8 +36,8 @@ def ping():
     try:
         supabase.table("contacts").select("id").limit(1).execute()
         return jsonify({"status": "awake"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        return jsonify({"status": "error"}), 500
 
 # Favicon
 @app.route("/favicon.ico")

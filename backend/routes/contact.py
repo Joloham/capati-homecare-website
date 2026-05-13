@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
+import time
 
 contact_bp = Blueprint("contact", __name__)
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
@@ -12,8 +13,25 @@ LIMITS = {
     "message": 1000
 }
 
+# Simple in-memory rate limiter — 1 submission per IP per 60 seconds
+_rate_limit = {}
+RATE_LIMIT_SECONDS = 60
+
+def is_rate_limited(ip):
+    now = time.time()
+    last = _rate_limit.get(ip, 0)
+    if now - last < RATE_LIMIT_SECONDS:
+        return True
+    _rate_limit[ip] = now
+    return False
+
 @contact_bp.route("/contact", methods=["POST"])
 def contact():
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
+
+    if is_rate_limited(ip):
+        return jsonify({"error": "Too many requests. Please wait before submitting again."}), 429
+
     data = request.get_json()
 
     name = data.get("name", "").strip()

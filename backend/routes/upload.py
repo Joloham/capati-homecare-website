@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
-from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
+from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from PIL import Image
 import time
 import io
@@ -15,6 +15,19 @@ JPEG_QUALITY = 82
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def verify_token(req):
+    auth = req.headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return False
+    token = auth.split(" ", 1)[1]
+    try:
+        # Verify token against Supabase
+        client = create_client(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+        user = client.auth.get_user(token)
+        return user is not None
+    except Exception:
+        return False
+
 def compress_image(file):
     img = Image.open(file)
 
@@ -28,6 +41,9 @@ def compress_image(file):
 
 @upload_bp.route("/upload", methods=["POST"])
 def upload():
+    if not verify_token(request):
+        return jsonify({"error": "Unauthorized"}), 401
+
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -51,7 +67,6 @@ def upload():
 
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
 
-        # Insert row into gallery table
         supabase.table("gallery").insert({
             "filename": filename,
             "caption": None

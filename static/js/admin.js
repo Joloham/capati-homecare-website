@@ -129,6 +129,7 @@ async function confirmUpload() {
 
   let successCount = 0;
 
+  const token = requireAuth();
   for (const file of stagedFiles) {
     const formData = new FormData();
     formData.append("file", file);
@@ -136,6 +137,9 @@ async function confirmUpload() {
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
         body: formData
       });
 

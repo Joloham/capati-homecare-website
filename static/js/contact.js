@@ -63,7 +63,7 @@ async function submitContact() {
       document.getElementById("message").value = "";
       updateCounter();
 
-      let seconds = 30;
+      let seconds = 60;
       btn.disabled = true;
       btn.style.opacity = "0.6";
       btn.style.cursor = "not-allowed";
