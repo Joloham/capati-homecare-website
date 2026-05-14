@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title>{% block title %}Golden Family Homecare{% endblock %}</title>
+
+        <link rel="stylesheet" href="/static/css/style.css"/>
+        <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
+
+        <meta name="description" content="{% block description %}Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home.{% endblock %}"/>
+        <meta property="og:title" content="{% block og_title %}Golden Family Homecare{% endblock %}"/>
+        <meta property="og:description" content="{% block og_description %}Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home.{% endblock %}"/>
+        <meta property="og:url" content="https://goldenfamilyhomecare.up.railway.app{% block og_url %}/{% endblock %}"/>
+        <meta property="og:type" content="website"/>
+        </head>
+
+    <body>
+        {% block body %}{% endblock %}
+    </body>
+</html>

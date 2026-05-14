@@ -315,6 +315,16 @@ section {
 
 /* ── GALLERY GRID ── */
 
+.gallery-card {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.gallery-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

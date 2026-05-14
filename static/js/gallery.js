@@ -79,8 +79,7 @@ async function loadGallery() {
     container.innerHTML = rows.map(row => {
       const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${row.filename}`;
       return `
-        <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;" onclick="openLightbox('${url}')" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)'">
-          <img src="${url}" alt="" loading="lazy" style="width:100%;height:200px;object-fit:cover;display:block;"/>
+        <div class="gallery-card" style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;" onclick="openLightbox('${url}')">
           ${row.caption ? `<div style="padding:0.6rem 0.85rem;"><p style="font-size:0.85rem;color:var(--text-mid);">${row.caption}</p></div>` : ""}
         </div>`;
     }).join("");
