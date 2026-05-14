@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
-from PIL import Image
+from PIL import Image, ImageOps
 import time
 import io
 
@@ -10,7 +10,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 BUCKET_NAME = "gallery"
-JPEG_QUALITY = 82
+WEBP_QUALITY = 80
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -31,11 +31,18 @@ def verify_token(req):
 def compress_image(file):
     img = Image.open(file)
 
+    # Reorient based on EXIF data (fixes sideways phone photos)
+    img = ImageOps.exif_transpose(img)
+
     if img.mode in ("RGBA", "P", "LA"):
         img = img.convert("RGB")
 
+    # Resize image to a max of 1600x1600 while maintaining aspect ratio
+    img.thumbnail((1600, 1600), Image.Resampling.LANCZOS if hasattr(Image, "Resampling") else Image.LANCZOS)
+
     buffer = io.BytesIO()
-    img.save(buffer, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+    # Aggressively compress and save as modern WebP
+    img.save(buffer, format="WEBP", quality=WEBP_QUALITY, method=6, optimize=True)
     buffer.seek(0)
     return buffer
 
@@ -57,12 +64,12 @@ def upload():
 
     try:
         compressed = compress_image(file)
-        filename = f"{int(time.time() * 1000)}_{(file.filename or 'image').rsplit('.', 1)[0]}.jpg"
+        filename = f"{int(time.time() * 1000)}_{(file.filename or 'image').rsplit('.', 1)[0]}.webp"
 
         supabase.storage.from_(BUCKET_NAME).upload(
             path=filename,
             file=compressed.read(),
-            file_options={"content-type": "image/jpeg"}
+            file_options={"content-type": "image/webp"}
         )
 
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
