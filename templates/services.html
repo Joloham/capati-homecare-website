@@ -1,71 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Services – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Services – Golden Family Homecare{% endblock %}
+{% block og_title %}Services – Golden Family Homecare{% endblock %}
+{% block og_url %}/services{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
     <p class="section-label">What We Offer</p>
     <h2 class="section-title">Our Services</h2>
     <p class="section-sub">
-        We offer a senior care experience that combines professional medical support with the heartfelt warmth of a real home. Our goal is to provide your family with peace of mind through a facility designed for safety, socialization, and dignity.
+      We offer a senior care experience that combines professional medical support with the heartfelt warmth of a real home. Our goal is to provide your family with peace of mind through a facility designed for safety, socialization, and dignity.
     </p>
 
     <div class="card-grid">
       <div class="card">
         <div class="card-icon">🛡️</div>
         <h3>24/7 Professional Monitoring</h3>
-        <p>
-            Continuous eyes-on care provided by a certified and compassionate team to ensure resident safety around the clock.
-        </p>
+        <p>Continuous eyes-on care provided by a certified and compassionate team to ensure resident safety around the clock.</p>
       </div>
       <div class="card">
         <div class="card-icon">💊</div>
         <h3>Professional Med-Management</h3>
-        <p>
-            Expert handling of all medication schedules and health needs with accuracy and professionalism.
-        </p>
+        <p>Expert handling of all medication schedules and health needs with accuracy and professionalism.</p>
       </div>
       <div class="card">
         <div class="card-icon">🥗</div>
         <h3>Home-Cooked Nutrition</h3>
-        <p>
-            Nutritious, home-style meals prepared daily to provide the comfort and taste of home dining.
-        </p>
+        <p>Nutritious, home-style meals prepared daily to provide the comfort and taste of home dining.</p>
       </div>
       <div class="card">
         <div class="card-icon">🌳</div>
         <h3>Tranquil Outdoor Activities</h3>
-        <p>
-            Access to our peaceful garden for social engagement, gentle exercise, and fresh air in a quiet village setting.
-        </p>
+        <p>Access to our peaceful garden for social engagement, gentle exercise, and fresh air in a quiet village setting.</p>
       </div>
       <div class="card">
         <div class="card-icon">👐</div>
         <h3>Assistance with Daily Living</h3>
-        <p>
-            Dedicated support for residents to maintain their independence while receiving help with personal care and daily tasks.
-        </p>
+        <p>Dedicated support for residents to maintain their independence while receiving help with personal care and daily tasks.</p>
       </div>
     </div>
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}

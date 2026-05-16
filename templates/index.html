@@ -1,30 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Golden Family Homecare{% endblock %}
+{% block og_url %}/{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <div class="hero">
-      <div class="hero-content">
-        <h1>Certified Care. The Comfort of Home.</h1>
-        <p>
-          Delivering professional medical support with the heartfelt warmth of a real family. We provide a safe sanctuary where your loved ones live with the dignity, trust, and personalized attention they deserve.
-        </p>
-        <a href="/contact" class="btn btn-primary">Schedule a Facility Tour</a>
-        <a href="/services" class="btn btn-secondary">View Our Services</a>
-      </div>
+    <div class="hero-content">
+      <h1>Certified Care. The Comfort of Home.</h1>
+      <p>
+        Delivering professional medical support with the heartfelt warmth of a real family. We provide a safe sanctuary where your loved ones live with the dignity, trust, and personalized attention they deserve.
+      </p>
+      <a href="/contact" class="btn btn-primary">Schedule a Facility Tour</a>
+      <a href="/services" class="btn btn-secondary">View Our Services</a>
     </div>
+  </div>
 
   <section>
     <p class="section-label">Why Choose Golden Family Homecare?</p>
@@ -35,44 +28,32 @@
       <div class="card">
         <div class="card-icon">🫂</div>
         <h3>Compassion First</h3>
-        <p>
-            We treat every resident like family, providing "Lolo and Lola" with warm, heart-centered care that honors their individuality.
-        </p>
+        <p>We treat every resident like family, providing "Lolo and Lola" with warm, heart-centered care that honors their individuality.</p>
       </div>
       <div class="card">
         <div class="card-icon">📋</div>
         <h3>Uncompromising Professionalism</h3>
-        <p>
-            From 24/7 monitoring to certified med-management, we provide the expert care your family deserve in a safe, facility-grade setting.
-        </p>
+        <p>From 24/7 monitoring to certified med-management, we provide the expert care your family deserve in a safe, facility-grade setting.</p>
       </div>
       <div class="card">
         <div class="card-icon">🤝</div>
         <h3>A Foundation of Trust</h3>
-        <p>
-            We believe in complete transparency with clear legal contracts and an honest, no-hidden-fees pricing model.
-        </p>
+        <p>We believe in complete transparency with clear legal contracts and an honest, no-hidden-fees pricing model.</p>
       </div>
       <div class="card">
         <div class="card-icon">🌟</div>
         <h3>Upholding Dignity</h3>
-        <p>
-            Our approach ensures every resident maintains their independence and self-respect through personalized attention and refined social activities.
-        </p>
+        <p>Our approach ensures every resident maintains their independence and self-respect through personalized attention and refined social activities.</p>
       </div>
       <div class="card">
         <div class="card-icon">🌳</div>
         <h3>Community Connection</h3>
-        <p>
-            Our family has been a part of Marikina since the 1970s, and we bring that local heritage to our care. To provide a familiar home environment, residents and their guests have access to a tranquil garden for outdoor activities and social engagement.
-        </p>
+        <p>Our family has been a part of Marikina since the 1970s, and we bring that local heritage to our care. Residents and their guests have access to a tranquil garden for outdoor activities and social engagement.</p>
       </div>
       <div class="card">
         <div class="card-icon">🏠</div>
         <h3>Peace of Mind</h3>
-        <p>
-            Our mission is to bridge the gap between clinical necessity and home-like comfort, easing the "caregiving challenges" for busy families with elderly members.
-        </p>
+        <p>Our mission is to bridge the gap between clinical necessity and home-like comfort, easing the "caregiving challenges" for busy families with elderly members.</p>
       </div>
     </div>
   </section>
@@ -95,7 +76,6 @@
             </div>
           </div>
         </div>
-
         <div class="card">
           <p style="font-size:1.4rem;margin-bottom:0.75rem;">❝</p>
           <p style="font-size:0.95rem;color:var(--text-mid);margin-bottom:1.25rem;">Placeholder testimonial.</p>
@@ -107,7 +87,6 @@
             </div>
           </div>
         </div>
-
         <div class="card">
           <p style="font-size:1.4rem;margin-bottom:0.75rem;">❝</p>
           <p style="font-size:0.95rem;color:var(--text-mid);margin-bottom:1.25rem;">Placeholder testimonial.</p>
@@ -124,10 +103,9 @@
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}

@@ -1,29 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>About – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}About – Golden Family Homecare{% endblock %}
+{% block og_title %}About – Golden Family Homecare{% endblock %}
+{% block og_url %}/about{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
     <p class="section-label">About Us</p>
     <h2 class="section-title">Who We Are</h2>
     <p class="section-sub">
-        Golden Family Homecare is a senior homecare facility in Marikina, dedicated to providing professional medical support in a warm, family-centered environment. We were founded with a simple purpose:  to bridge the gap between clinical care and genuine human comfort.
+      Golden Family Homecare is a senior homecare facility in Marikina, dedicated to providing professional medical support in a warm, family-centered environment. We were founded with a simple purpose: to bridge the gap between clinical care and genuine human comfort.
     </p>
 
     <p style="color: var(--text-mid); max-width: 550px; margin-bottom: 2rem;">
-        We serve families who want the best for their loved ones—offering peace of mind through 24/7 attentive care, while preserving the dignity, independence, and happiness of every resident. Here, your family becomes part of ours.
+      We serve families who want the best for their loved ones—offering peace of mind through 24/7 attentive care, while preserving the dignity, independence, and happiness of every resident. Here, your family becomes part of ours.
     </p>
 
     <div class="card-grid">
@@ -50,10 +44,9 @@
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}

@@ -1,37 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Page not found – Golden Family Homecare"/>
-  <title>Page Not Found – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Page Not Found – Golden Family Homecare{% endblock %}
+{% block description %}Page not found – Golden Family Homecare{% endblock %}
 
-  <div id="navbar-container">
-    {% include 'components/navbar.html' %}
-  </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
-  <main style="flex:1">
-    <section style="text-align:center;padding:6rem 2.5rem;">
-      <p class="section-label">404 – Not Found</p>
-      <h2 class="section-title">This Page Doesn't Exist</h2>
-      <p class="section-sub" style="max-width:480px;margin:0 auto 2.5rem;">
-        The page you're looking for may have been moved or never existed. Let's get you back on track.
-      </p>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="/" class="btn btn-primary">Back to Home</a>
-        <a href="/contact" class="btn btn-secondary">Contact Us</a>
-      </div>
-    </section>
-  </main>
+<main style="flex:1">
+  <section style="text-align:center;padding:6rem 2.5rem;">
+    <p class="section-label">404 – Not Found</p>
+    <h2 class="section-title">This Page Doesn't Exist</h2>
+    <p class="section-sub" style="max-width:480px;margin:0 auto 2.5rem;">
+      The page you're looking for may have been moved or never existed. Let's get you back on track.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/" class="btn btn-primary">Back to Home</a>
+      <a href="/contact" class="btn btn-secondary">Contact Us</a>
+    </div>
+  </section>
+</main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}

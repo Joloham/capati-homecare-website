@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Gallery – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Gallery – Golden Family Homecare{% endblock %}
+{% block og_title %}Gallery – Golden Family Homecare{% endblock %}
+{% block og_url %}/gallery{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main style="flex:1">
   <section style="flex:1">
@@ -25,18 +19,16 @@
     </div>
   </section>
 
-  <!-- Lightbox -->
   <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;">
     <button onclick="closeLightbox()" style="position:absolute;top:1.25rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;">✕</button>
     <img id="lightbox-img" src="" alt="" style="max-width:90vw;max-height:88vh;border-radius:8px;object-fit:contain;"/>
   </div>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-  <script src="/static/js/gallery.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/gallery.js"></script>
+{% endblock %}

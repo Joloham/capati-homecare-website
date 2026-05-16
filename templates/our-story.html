@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Our Story – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Our Story – Golden Family Homecare{% endblock %}
+{% block og_title %}Our Story – Golden Family Homecare{% endblock %}
+{% block og_url %}/our-story{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
@@ -22,13 +16,11 @@
       Our family has been rooted in Marikina since 1969. We are six siblings raised in a home built on the values of loyalty, hard work, and devotion — values modeled by our late parents, Pedro and Marina.
     </p>
 
-    <!-- Photo placeholder: Parents 50th anniversary + grandkids -->
     <div style="width:100%;max-width:680px;height:280px;background:var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem;">
       <p style="color:var(--text-light);font-size:0.875rem;">📷 Photo — Parents' 50th Anniversary with Grandchildren</p>
     </div>
 
     <div style="max-width:680px;">
-
       <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--sage-dark);margin-bottom:1.25rem;">The Heart of Golden Family Homecare</h3>
 
       <p style="color:var(--text-mid);line-height:1.8;margin-bottom:1rem;">
@@ -41,7 +33,6 @@
         <strong>Honoring "Mama Mina":</strong> We chose to launch this facility on June 9, 2026, to honor the first death anniversary of our mother's passing — turning our personal journey of love and loss into a mission of service for other families.
       </p>
 
-      <!-- Photo placeholder: Mama Mina -->
       <div style="width:100%;max-width:680px;height:280px;background:var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem;">
         <p style="color:var(--text-light);font-size:0.875rem;">📷 Photo — Mommy and Daddy</p>
       </div>
@@ -55,7 +46,6 @@
         When we say we will care for your family like our own, we mean it. We bring 50 years of Marikina heritage and the collective heart of six siblings to ensure your loved ones live with the dignity, trust, and professionalism they deserve. Just like how we cared for our Papa and Mama.
       </p>
 
-      <!-- Photo placeholder: Six siblings -->
       <div style="width:100%;max-width:680px;height:280px;background:var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem;">
         <p style="color:var(--text-light);font-size:0.875rem;">📷 Photo — The Six Siblings</p>
       </div>
@@ -64,15 +54,13 @@
         <p style="font-size:1rem;color:var(--text-mid);margin-bottom:1.25rem;">Want to see our home for yourself? We'd love to welcome your family.</p>
         <a href="/contact" class="btn btn-primary">Schedule a Facility Tour</a>
       </div>
-
     </div>
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}

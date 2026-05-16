@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Contact – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Contact – Golden Family Homecare{% endblock %}
+{% block og_title %}Contact – Golden Family Homecare{% endblock %}
+{% block og_url %}/contact{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
@@ -22,7 +16,6 @@
 
     <div class="contact-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;max-width:900px;">
 
-      <!-- Left: Form -->
       <div>
         <div class="contact-name-phone" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
           <div class="form-group" style="margin-bottom:0;">
@@ -47,11 +40,9 @@
         <p id="form-msg" class="form-message"></p>
       </div>
 
-      <!-- Right: Info -->
       <div>
         <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;">
           <h3 style="font-size:1.1rem;margin-bottom:1.25rem;">Our Contact Info</h3>
-
           <div style="display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:1rem;">
             <span style="font-size:1.3rem;">📍</span>
             <div>
@@ -59,7 +50,6 @@
               <p style="font-size:0.9rem;color:var(--text-mid);">43 Gold Street, Concepcion Dos, Marikina City, Metro Manila, 1811</p>
             </div>
           </div>
-
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <span style="font-size:1.3rem;">📞</span>
             <div>
@@ -85,11 +75,10 @@
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-  <script src="/static/js/contact.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+<script src="/static/js/contact.js"></script>
+{% endblock %}

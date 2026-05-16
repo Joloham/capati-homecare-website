@@ -1,81 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>FAQ – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-  <style>
-    .faq-item {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--warm-white);
-      margin-bottom: 1rem;
-      overflow: hidden;
-    }
+{% extends "base.html" %}
+{% block title %}FAQ – Golden Family Homecare{% endblock %}
+{% block og_title %}FAQ – Golden Family Homecare{% endblock %}
+{% block og_url %}/faq{% endblock %}
 
-    .faq-question {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 1.25rem 1.5rem;
-      text-align: left;
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--text-dark);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
+{% block extra_head %}
+<style>
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .faq-question:hover { background: var(--cream); }
+  .faq-icon {
+    font-size: 1.2rem;
+    color: var(--sage);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.3s ease;
+    padding: 0 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+  .faq-item.open .faq-answer {
+    max-height: 600px;
+    padding: 0 1.5rem 1.25rem;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-answer ul { margin: 0.75rem 0 0 1.25rem; }
+  .faq-answer ul li { margin-bottom: 0.4rem; }
+</style>
+{% endblock %}
 
-    .faq-question:hover {
-      background: var(--cream);
-    }
-
-    .faq-icon {
-      font-size: 1.2rem;
-      color: var(--sage);
-      transition: transform 0.3s;
-      flex-shrink: 0;
-    }
-
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease, padding 0.3s ease;
-      padding: 0 1.5rem;
-      font-size: 0.95rem;
-      color: var(--text-mid);
-      line-height: 1.7;
-    }
-
-    .faq-item.open .faq-answer {
-      max-height: 600px;
-      padding: 0 1.5rem 1.25rem;
-    }
-
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg);
-    }
-
-    .faq-answer ul {
-      margin: 0.75rem 0 0 1.25rem;
-    }
-
-    .faq-answer ul li {
-      margin-bottom: 0.4rem;
-    }
-  </style>
-</head>
-<body>
-
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
@@ -86,20 +67,12 @@
     <div style="max-width:720px;">
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          How do I enroll a loved one?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          You can start by sending us a message through our Contact page or calling us directly. We'll schedule a brief assessment to understand your loved one's needs and recommend the best care plan.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">How do I enroll a loved one?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">You can start by sending us a message through our Contact page or calling us directly. We'll schedule a brief assessment to understand your loved one's needs and recommend the best care plan.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          What areas do you serve?
-          <span class="faq-icon">+</span>
-        </button>
+        <button class="faq-question" onclick="toggleFaq(this)">What areas do you serve?<span class="faq-icon">+</span></button>
         <div class="faq-answer">
           While our homecare facility is in Marikina, we serve families from all across the Philippines and overseas. We specifically provide peace of mind to:
           <ul>
@@ -111,80 +84,42 @@
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Is there a minimum contract or commitment?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Minimum contract is one year.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Is there a minimum contract or commitment?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Minimum contract is one year.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Are your caregivers trained and background-checked?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Yes. Our caregivers are trained, experienced, and carefully screened to ensure safe, professional, and compassionate care at all times.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Are your caregivers trained and background-checked?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Yes. Our caregivers are trained, experienced, and carefully screened to ensure safe, professional, and compassionate care at all times.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Can family members visit anytime?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          We encourage family visits during visiting hours. Visiting hours are structured to ensure the comfort and routine of all residents, while keeping a warm and welcoming environment.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Can family members visit anytime?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">We encourage family visits during visiting hours. Visiting hours are structured to ensure the comfort and routine of all residents, while keeping a warm and welcoming environment.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          What happens in case of a medical emergency?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          We follow a strict emergency protocol. Residents are immediately attended to, while family members are promptly informed. We have an on-call medical doctor. We will transport to a nearby hospital, if needed.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">What happens in case of a medical emergency?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">We follow a strict emergency protocol. Residents are immediately attended to, while family members are promptly informed. We have an on-call medical doctor. We will transport to a nearby hospital, if needed.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          How are payments handled?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          We provide clear, transparent pricing with no hidden fees. Payment terms and schedules will be discussed during enrollment.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">How are payments handled?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">We provide clear, transparent pricing with no hidden fees. Payment terms and schedules will be discussed during enrollment.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          What services are included in your care?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Our services include 24/7 monitoring, assistance with daily living, medication management, home-cooked meals, and social activities for overall well-being.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">What services are included in your care?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Our services include 24/7 monitoring, assistance with daily living, medication management, home-cooked meals, and social activities for overall well-being.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Will my loved one have companionship and activities?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Yes. We promote social interaction and meaningful daily activities to support emotional and mental wellness.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Will my loved one have companionship and activities?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Yes. We promote social interaction and meaningful daily activities to support emotional and mental wellness.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Can you accommodate special medical needs?
-          <span class="faq-icon">+</span>
-        </button>
+        <button class="faq-question" onclick="toggleFaq(this)">Can you accommodate special medical needs?<span class="faq-icon">+</span></button>
         <div class="faq-answer">
           We can accommodate certain medical needs with proper coordination. Oxygen support may be provided on a temporary basis — until the resident's condition stabilizes within a maximum of two (2) weeks. If the condition remains unstable beyond this period, we may advise transfer to a more appropriate medical facility for continued care.
           <br/><br/>
@@ -193,61 +128,40 @@
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          How do you ensure safety and security?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Our home is designed for senior safety, with attentive staff, continuous monitoring, and structured routines.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">How do you ensure safety and security?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Our home is designed for senior safety, with attentive staff, continuous monitoring, and structured routines.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Can residents bring personal belongings?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          As space is limited, residents may bring a limited number of personal items to make their space feel familiar and comfortable.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Can residents bring personal belongings?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">As space is limited, residents may bring a limited number of personal items to make their space feel familiar and comfortable.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          Do you offer trial stays or short-term care?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Short-term stays may be arranged depending on availability. Please contact us to discuss your needs.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">Do you offer trial stays or short-term care?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Short-term stays may be arranged depending on availability. Please contact us to discuss your needs.</div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          How quickly can we move in?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          Move-in timelines depend on availability and assessment, but we aim to accommodate families as soon as possible.
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)">How quickly can we move in?<span class="faq-icon">+</span></button>
+        <div class="faq-answer">Move-in timelines depend on availability and assessment, but we aim to accommodate families as soon as possible.</div>
       </div>
 
     </div>
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-  <script>
-    function toggleFaq(btn) {
-      const item = btn.closest(".faq-item");
-      const isOpen = item.classList.contains("open");
-      document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
-      if (!isOpen) item.classList.add("open");
-    }
-  </script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest(".faq-item");
+    const isOpen = item.classList.contains("open");
+    document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
+    if (!isOpen) item.classList.add("open");
+  }
+</script>
+{% endblock %}

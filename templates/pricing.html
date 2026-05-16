@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Golden Family Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home."/>
-  <title>Pricing – Golden Family Homecare</title>
-  <link rel="stylesheet" href="/static/css/style.css"/>
-  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"/>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Pricing – Golden Family Homecare{% endblock %}
+{% block og_title %}Pricing – Golden Family Homecare{% endblock %}
+{% block og_url %}/pricing{% endblock %}
 
-    <div id="navbar-container">
-      {% include 'components/navbar.html' %}
-    </div>
+{% block body %}
+<div id="navbar-container">
+  {% include 'components/navbar.html' %}
+</div>
 
 <main>
   <section>
@@ -21,11 +15,11 @@
     <p class="section-sub">We believe in honest, transparent pricing with no hidden fees. Rates are personalized based on your loved one's care needs and will be discussed in full during your assessment.</p>
 
     <div style="max-width:680px;">
-
       <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;">
         <h3 style="margin-bottom:1rem;">How Pricing Works</h3>
         <p style="color:var(--text-mid);font-size:0.95rem;line-height:1.8;">
-            We understand that choosing the right care for your loved one is a significant decision, which is why we focus on creating personalized care plans that honor the unique needs of every resident. During our initial time together, we will gently guide you through a comprehensive review of all rates, inclusions, and payment terms to ensure your family feels fully supported and informed. Our commitment is to provide total financial clarity from the very beginning, giving you the peace of mind to focus entirely on the comfort and well-being of your family member.</p>
+          We understand that choosing the right care for your loved one is a significant decision, which is why we focus on creating personalized care plans that honor the unique needs of every resident. During our initial time together, we will gently guide you through a comprehensive review of all rates, inclusions, and payment terms to ensure your family feels fully supported and informed. Our commitment is to provide total financial clarity from the very beginning, giving you the peace of mind to focus entirely on the comfort and well-being of your family member.
+        </p>
       </div>
 
       <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;">
@@ -42,15 +36,13 @@
         <p style="font-size:1rem;color:var(--text-mid);margin-bottom:1.25rem;">Ready to learn more? Schedule a facility tour or send us a message and we'll reach out to discuss how we can support your family.</p>
         <a href="/contact" class="btn btn-primary">Get in Touch</a>
       </div>
-
     </div>
   </section>
 </main>
 
-  <div id="footer-container">
-    {% include 'components/footer.html' %}
-  </div>
+<div id="footer-container">
+  {% include 'components/footer.html' %}
+</div>
 
-  <script src="/static/js/components.js"></script>
-</body>
-</html>
+<script src="/static/js/components.js"></script>
+{% endblock %}
