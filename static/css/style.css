@@ -389,7 +389,7 @@ section {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 130px;
+  min-height: 145px;
 }
 
 .form-message {
