@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template, jsonify
+from flask import Flask, send_from_directory, render_template, jsonify, Response
 from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from backend.routes.upload import upload_bp
 from backend.routes.contact import contact_bp
@@ -38,6 +38,33 @@ def ping():
         return jsonify({"status": "awake"}), 200
     except Exception:
         return jsonify({"status": "error"}), 500
+
+# Sitemap
+@app.route("/sitemap.xml")
+def sitemap():
+    pages = [
+        "/",
+        "/about",
+        "/our-story",
+        "/services",
+        "/gallery",
+        "/pricing",
+        "/faq",
+        "/contact"
+    ]
+    base_url = "https://goldencirclehomecare.onrender.com"
+    urls = "\n".join([
+        f"""  <url>
+    <loc>{base_url}{page}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>{'1.0' if page == '/' else '0.8'}</priority>
+  </url>""" for page in pages
+    ])
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{urls}
+</urlset>"""
+    return Response(xml, mimetype="application/xml")
 
 # Favicon
 @app.route("/favicon.ico")
