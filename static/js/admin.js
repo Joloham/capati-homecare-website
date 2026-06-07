@@ -29,6 +29,27 @@ async function getToken() {
   return data.token || null;
 }
 
+async function supabaseFetch(url, options = {}) {
+  let token = await getToken();
+  options.headers = { ...options.headers, "Authorization": `Bearer ${token}`, "apikey": SUPABASE_KEY };
+
+  let res = await fetch(url, options);
+
+  // If token expired, refresh and retry once
+  if (res.status === 401) {
+    const refreshRes = await fetch("/api/refresh", { method: "POST" });
+    if (!refreshRes.ok) {
+      window.location.href = "/admin/login";
+      return null;
+    }
+    token = await getToken();
+    options.headers["Authorization"] = `Bearer ${token}`;
+    res = await fetch(url, options);
+  }
+
+  return res;
+}
+
 
 /* ── AUTH ── */
 
@@ -220,17 +241,15 @@ function editCaption(btn, filename) {
 async function saveCaption(btn, filename) {
   await loadConfig();
 
-  const token   = await getToken();
+  const token   = requireAuth();
   const card    = btn.closest("div[data-filename]");
   const input   = card.querySelector("input");
   const caption = input.value.trim();
 
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/gallery?filename=eq.${encodeURIComponent(filename)}`, {
+    await supabaseFetch(`${SUPABASE_URL}/rest/v1/gallery?filename=eq.${encodeURIComponent(filename)}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY,
         "Content-Type": "application/json",
         "Prefer": "return=minimal"
       },
@@ -269,15 +288,13 @@ function cancelEdit(btn, filename, originalCaption) {
 async function loadDashboardGallery() {
   await loadConfig();
 
-  const token     = await getToken();
+  const token     = requireAuth();
   const container = document.getElementById("existing-photos");
   if (!container) return;
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/gallery?order=created_at.desc`, {
+    const res = await supabaseFetch(`${SUPABASE_URL}/rest/v1/gallery?order=created_at.desc`, {
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY,
         "Content-Type": "application/json"
       }
     });
@@ -307,17 +324,13 @@ async function loadDashboardGallery() {
 
 async function deletePhoto(filename, btn) {
   await loadConfig();
-  const token = await getToken();
+
   if (!confirm(`Delete this photo?`)) return;
 
   try {
     // Delete from storage
-    const storageRes = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY
-      }
+    const storageRes = await supabaseFetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
+      method: "DELETE"
     });
 
     if (!storageRes.ok) {
@@ -327,12 +340,8 @@ async function deletePhoto(filename, btn) {
     }
 
     // Delete from gallery table
-    await fetch(`${SUPABASE_URL}/rest/v1/gallery?filename=eq.${encodeURIComponent(filename)}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY
-      }
+    await supabaseFetch(`${SUPABASE_URL}/rest/v1/gallery?filename=eq.${encodeURIComponent(filename)}`, {
+      method: "DELETE"
     });
 
     btn.closest("div[data-filename]").remove();
@@ -353,7 +362,7 @@ let msgTotal  = 0;
 async function loadMessages(append = false) {
   await loadConfig();
 
-  const token       = await getToken();
+  const token       = requireAuth();
   const container   = document.getElementById("messages-list");
   const loadMoreBtn = document.getElementById("load-more-btn");
   if (!container) return;
@@ -368,8 +377,6 @@ async function loadMessages(append = false) {
       `${SUPABASE_URL}/rest/v1/contacts?order=created_at.desc&limit=${MSG_PAGE_SIZE}&offset=${msgOffset}`,
       {
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "apikey": SUPABASE_KEY,
           "Content-Type": "application/json",
           "Prefer": "count=exact"
         }
@@ -443,14 +450,12 @@ async function loadMessages(append = false) {
 
 async function toggleRead(id, currentlyRead) {
   await loadConfig();
-  const token = await getToken();
+
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
+    const res = await supabaseFetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY,
         "Content-Type": "application/json",
         "Prefer": "return=minimal"
       },
@@ -484,16 +489,12 @@ async function toggleRead(id, currentlyRead) {
 
 async function deleteMessage(id) {
   await loadConfig();
-  const token = await getToken();
+
   if (!confirm("Delete this message?")) return;
 
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "apikey": SUPABASE_KEY
-      }
+    await supabaseFetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
+      method: "DELETE"
     });
 
     const card = document.getElementById(`msg-${id}`);
