@@ -30,6 +30,7 @@ async function getToken() {
 }
 
 async function supabaseFetch(url, options = {}) {
+  await loadConfig();
   let token = await getToken();
   options.headers = { ...options.headers, "Authorization": `Bearer ${token}`, "apikey": SUPABASE_KEY };
 
@@ -241,7 +242,7 @@ function editCaption(btn, filename) {
 async function saveCaption(btn, filename) {
   await loadConfig();
 
-  const token   = requireAuth();
+  const token = await getToken();
   const card    = btn.closest("div[data-filename]");
   const input   = card.querySelector("input");
   const caption = input.value.trim();
@@ -288,7 +289,7 @@ function cancelEdit(btn, filename, originalCaption) {
 async function loadDashboardGallery() {
   await loadConfig();
 
-  const token     = requireAuth();
+  const token = await getToken();
   const container = document.getElementById("existing-photos");
   if (!container) return;
 
@@ -362,7 +363,7 @@ let msgTotal  = 0;
 async function loadMessages(append = false) {
   await loadConfig();
 
-  const token       = requireAuth();
+  const token = await getToken();
   const container   = document.getElementById("messages-list");
   const loadMoreBtn = document.getElementById("load-more-btn");
   if (!container) return;
@@ -373,7 +374,7 @@ async function loadMessages(append = false) {
   }
 
   try {
-    const res = await fetch(
+    const res = await supabaseFetch(
       `${SUPABASE_URL}/rest/v1/contacts?order=created_at.desc&limit=${MSG_PAGE_SIZE}&offset=${msgOffset}`,
       {
         headers: {
