@@ -79,8 +79,7 @@
   <script src="/static/js/admin.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      requireAuth();
-      document.getElementById("admin-email").textContent = getAdminEmail();
+      getAdminEmail().then(email => { document.getElementById("admin-email").textContent = email; });
       loadDashboardGallery();
       loadMessages();
 

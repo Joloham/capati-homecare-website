@@ -1,8 +1,10 @@
-from flask import Flask, send_from_directory, render_template, jsonify, Response
+from flask import Flask, send_from_directory, render_template, jsonify, Response, redirect
 from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from backend.routes.upload import upload_bp
 from backend.routes.contact import contact_bp
+from backend.routes.admin import admin_bp, login_required
 from supabase import create_client
+from datetime import timedelta
 import os
 
 VALID_PAGES = {"about", "our-story", "services", "gallery", "pricing", "faq", "contact"}
@@ -15,10 +17,12 @@ app = Flask(
 )
 
 app.secret_key = FLASK_SECRET_KEY
+app.permanent_session_lifetime = timedelta(hours=24)
 
 # Register API blueprints
 app.register_blueprint(upload_bp, url_prefix="/api")
 app.register_blueprint(contact_bp, url_prefix="/api")
+app.register_blueprint(admin_bp)
 
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
@@ -86,7 +90,16 @@ def serve_page(page):
 def not_found(e):
     return render_template("404.html"), 404
 
+# Admin pages — server-side protected
+@app.route("/admin/login")
+def admin_login_page():
+    from flask import session
+    if session.get("sb_access_token"):
+        return redirect("/admin/dashboard")
+    return render_template("admin/login.html")
+
 @app.route("/admin/<page>")
+@login_required
 def serve_admin_page(page):
     return render_template(f"admin/{page}.html")
 

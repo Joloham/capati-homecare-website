@@ -17,18 +17,22 @@ function sanitize(str) {
 
 async function loadConfig() {
   if (SUPABASE_URL) return;
-  const res = await fetch("/api/config");
+  const res  = await fetch("/api/config");
   const data = await res.json();
   SUPABASE_URL = data.supabase_url;
   SUPABASE_KEY = data.supabase_key;
+}
+
+async function getToken() {
+  const res  = await fetch("/api/me");
+  const data = await res.json();
+  return data.token || null;
 }
 
 
 /* ── AUTH ── */
 
 async function adminLogin() {
-  await loadConfig();
-
   const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const msg      = document.getElementById("login-msg");
@@ -43,23 +47,18 @@ async function adminLogin() {
   }
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    const res = await fetch("/api/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
 
-    if (res.ok && data.access_token) {
-      localStorage.setItem("sb_access_token", data.access_token);
-      localStorage.setItem("sb_user_email", data.user.email);
+    if (res.ok) {
       window.location.href = "/admin/dashboard";
     } else {
-      msg.textContent = data.error_description || "Invalid credentials.";
+      msg.textContent = data.error || "Invalid credentials.";
       msg.classList.add("error");
     }
   } catch (err) {
@@ -68,23 +67,14 @@ async function adminLogin() {
   }
 }
 
-
-/* ── SESSION GUARD ── */
-
-function requireAuth() {
-  const token = localStorage.getItem("sb_access_token");
-  if (!token) {
-    window.location.href = "/admin/login";
-  }
-  return token;
+async function getAdminEmail() {
+  const res  = await fetch("/api/me");
+  const data = await res.json();
+  return data.email || "Admin";
 }
 
-function getAdminEmail() {
-  return localStorage.getItem("sb_user_email") || "Admin";
-}
-
-function adminLogout() {
-  localStorage.clear();
+async function adminLogout() {
+  await fetch("/api/logout", { method: "POST" });
   window.location.href = "/admin/login";
 }
 
@@ -149,7 +139,7 @@ async function confirmUpload() {
   statusEl.textContent = `Uploading ${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""}...`;
 
   let successCount = 0;
-  const token = requireAuth();
+  const token = await getToken();
 
   for (const file of stagedFiles) {
     const formData = new FormData();
@@ -230,7 +220,7 @@ function editCaption(btn, filename) {
 async function saveCaption(btn, filename) {
   await loadConfig();
 
-  const token   = requireAuth();
+  const token   = await getToken();
   const card    = btn.closest("div[data-filename]");
   const input   = card.querySelector("input");
   const caption = input.value.trim();
@@ -279,7 +269,7 @@ function cancelEdit(btn, filename, originalCaption) {
 async function loadDashboardGallery() {
   await loadConfig();
 
-  const token     = requireAuth();
+  const token     = await getToken();
   const container = document.getElementById("existing-photos");
   if (!container) return;
 
@@ -317,8 +307,7 @@ async function loadDashboardGallery() {
 
 async function deletePhoto(filename, btn) {
   await loadConfig();
-
-  const token = requireAuth();
+  const token = await getToken();
   if (!confirm(`Delete this photo?`)) return;
 
   try {
@@ -364,7 +353,7 @@ let msgTotal  = 0;
 async function loadMessages(append = false) {
   await loadConfig();
 
-  const token       = requireAuth();
+  const token       = await getToken();
   const container   = document.getElementById("messages-list");
   const loadMoreBtn = document.getElementById("load-more-btn");
   if (!container) return;
@@ -454,8 +443,7 @@ async function loadMessages(append = false) {
 
 async function toggleRead(id, currentlyRead) {
   await loadConfig();
-
-  const token = requireAuth();
+  const token = await getToken();
 
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${id}`, {
@@ -496,8 +484,7 @@ async function toggleRead(id, currentlyRead) {
 
 async function deleteMessage(id) {
   await loadConfig();
-
-  const token = requireAuth();
+  const token = await getToken();
   if (!confirm("Delete this message?")) return;
 
   try {
