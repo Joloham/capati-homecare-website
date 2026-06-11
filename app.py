@@ -73,7 +73,7 @@ def sitemap():
 # Favicon
 @app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(BASE_DIR, "static", "images"), "favicon.svg", mimetype="image/svg+xml")
+    return send_from_directory(os.path.join(BASE_DIR, "static", "images"), "favicon.ico", mimetype="image/x-icon")
 
 # Serve HTML pages
 @app.route("/")
