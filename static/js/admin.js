@@ -428,7 +428,7 @@ async function loadMessages(append = false) {
           </div>
           <span style="font-size:0.8rem;color:var(--text-light);">${date}</span>
         </div>
-        <a href="mailto:${sanitize(m.email)}" style="font-size:0.875rem;color:var(--sage-dark);">${sanitize(m.email)}</a>
+        <a class="msg-email-link" style="font-size:0.875rem;color:var(--sage-dark);"></a>
         ${m.phone ? `<p style="font-size:0.875rem;color:var(--text-mid);margin-top:0.2rem;">📞 ${sanitize(m.phone)}</p>` : ""}
         <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word;">${sanitize(m.message)}</p>
         <div style="margin-top:1rem;display:flex;gap:0.75rem;">
@@ -439,6 +439,10 @@ async function loadMessages(append = false) {
             Delete
           </button>
         </div>`;
+
+      const emailLink = card.querySelector(".msg-email-link");
+      emailLink.href = "mailto:" + m.email;
+      emailLink.textContent = m.email;
 
       container.appendChild(card);
     });
