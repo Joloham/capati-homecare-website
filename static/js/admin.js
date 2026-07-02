@@ -212,7 +212,7 @@ function createPhotoCard(url, filename, caption) {
   wrapper.innerHTML = `
     <img src="${url}" alt="" style="width:100%;height:130px;object-fit:cover;cursor:pointer;" onclick="openLightbox('${url}')"/>
     <div style="padding:0.5rem 0.6rem;">
-      <p class="photo-caption" style="font-size:0.8rem;color:var(--text-mid);min-height:1.2em;">${caption || "<span style='color:var(--text-light);font-style:italic;'>No caption</span>"}</p>
+      <p class="photo-caption" style="font-size:0.8rem;color:var(--text-mid);min-height:1.2em;">${caption ? sanitize(caption) : "<span style='color:var(--text-light);font-style:italic;'>No caption</span>"}</p>
       <div style="display:flex;gap:0.5rem;margin-top:0.4rem;">
         <button onclick="editCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
         <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>
@@ -230,13 +230,18 @@ function editCaption(btn, filename) {
   const captionEl      = card.querySelector(".photo-caption");
   const currentCaption = captionEl.dataset.caption || "";
 
-  captionEl.innerHTML = `
-    <input type="text" value="${currentCaption}" maxlength="100" style="width:100%;font-size:0.8rem;padding:0.25rem 0.4rem;border:1px solid var(--sage);border-radius:6px;font-family:'Lato',sans-serif;"/>`;
+  captionEl.innerHTML = "";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = currentCaption;
+  input.maxLength = 100;
+  input.style.cssText = "width:100%;font-size:0.8rem;padding:0.25rem 0.4rem;border:1px solid var(--sage);border-radius:6px;font-family:'Lato',sans-serif;";
+  captionEl.appendChild(input);
 
   const actionDiv = btn.closest("div");
   actionDiv.innerHTML = `
     <button onclick="saveCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:none;background:var(--sage);color:white;cursor:pointer;">Save</button>
-    <button onclick="cancelEdit(this, '${filename}', '${currentCaption}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-mid);cursor:pointer;">Cancel</button>`;
+    <button onclick="cancelEdit(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-mid);cursor:pointer;">Cancel</button>`;
 }
 
 async function saveCaption(btn, filename) {
@@ -259,7 +264,7 @@ async function saveCaption(btn, filename) {
 
     const captionEl = card.querySelector(".photo-caption");
     captionEl.dataset.caption = caption;
-    captionEl.innerHTML = caption || "<span style='color:var(--text-light);font-style:italic;'>No caption</span>";
+    captionEl.innerHTML = caption ? sanitize(caption) : "<span style='color:var(--text-light);font-style:italic;'>No caption</span>";
 
     const actionDiv = btn.closest("div");
     actionDiv.innerHTML = `
@@ -271,11 +276,12 @@ async function saveCaption(btn, filename) {
   }
 }
 
-function cancelEdit(btn, filename, originalCaption) {
-  const card      = btn.closest("div[data-filename]");
-  const captionEl = card.querySelector(".photo-caption");
+function cancelEdit(btn, filename) {
+  const card           = btn.closest("div[data-filename]");
+  const captionEl      = card.querySelector(".photo-caption");
+  const originalCaption = captionEl.dataset.caption || "";
 
-  captionEl.innerHTML = originalCaption || "<span style='color:var(--text-light);font-style:italic;'>No caption</span>";
+  captionEl.innerHTML = originalCaption ? sanitize(originalCaption) : "<span style='color:var(--text-light);font-style:italic;'>No caption</span>";
 
   const actionDiv = btn.closest("div");
   actionDiv.innerHTML = `

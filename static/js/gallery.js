@@ -3,6 +3,16 @@ let SUPABASE_KEY = null;
 const BUCKET = "gallery";
 
 
+/* ── XSS SANITIZATION ── */
+
+function sanitize(str) {
+  if (!str) return "";
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+
 /* ── CONFIG ── */
 
 async function loadConfig() {
@@ -81,7 +91,7 @@ async function loadGallery() {
       return `
         <div class="gallery-card" style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;" onclick="openLightbox('${url}')">
           <img src="${url}" style="width:100%;height:200px;object-fit:cover;display:block;" loading="lazy"/>
-          ${row.caption ? `<div style="padding:0.6rem 0.85rem;"><p style="font-size:0.85rem;color:var(--text-mid);">${row.caption}</p></div>` : ""}
+          ${row.caption ? `<div style="padding:0.6rem 0.85rem;"><p style="font-size:0.85rem;color:var(--text-mid);">${sanitize(row.caption)}</p></div>` : ""}
         </div>`;
     }).join("");
 
