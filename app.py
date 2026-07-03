@@ -56,7 +56,7 @@ def sitemap():
         "/faq",
         "/contact"
     ]
-    base_url = "https://goldencirclehomecare.com"
+    base_url = "https://www.goldencirclehomecare.com"
     urls = "\n".join([
         f"""  <url>
     <loc>{base_url}{page}</loc>
