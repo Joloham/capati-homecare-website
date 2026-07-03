@@ -26,6 +26,15 @@ app.register_blueprint(admin_bp)
 
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    return response
+
 # Public config for frontend JS
 @app.route("/api/config")
 def config():
