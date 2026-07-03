@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from functools import wraps
 import requests as http
+import time
 from backend.config import SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
 
 admin_bp = Blueprint("admin", __name__)
@@ -16,10 +17,40 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+# ── LOGIN RATE LIMITER ── (same pattern as contact.py — 3 attempts per IP per 60s)
+
+_login_rate_limit = {}
+LOGIN_RATE_LIMIT_SECONDS = 60
+LOGIN_RATE_LIMIT_ATTEMPTS = 3
+
+def cleanup_login_rate_limit():
+    now = time.time()
+    expired = [ip for ip, attempts in _login_rate_limit.items()
+               if now - attempts[-1] > LOGIN_RATE_LIMIT_SECONDS]
+    for ip in expired:
+        del _login_rate_limit[ip]
+
+def is_login_rate_limited(ip):
+    now = time.time()
+    attempts = _login_rate_limit.get(ip, [])
+    attempts = [t for t in attempts if now - t < LOGIN_RATE_LIMIT_SECONDS]
+    if len(attempts) >= LOGIN_RATE_LIMIT_ATTEMPTS:
+        _login_rate_limit[ip] = attempts
+        return True
+    attempts.append(now)
+    _login_rate_limit[ip] = attempts
+    return False
+
 # ── LOGIN ──
 
 @admin_bp.route("/api/login", methods=["POST"])
 def login():
+    cleanup_login_rate_limit()
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
+
+    if is_login_rate_limited(ip):
+        return jsonify({"error": "Too many login attempts. Please wait before trying again."}), 429
+
     data     = request.get_json()
     email    = data.get("email", "").strip()
     password = data.get("password", "")
