@@ -1,4 +1,5 @@
 from flask import Flask, send_from_directory, render_template, jsonify, Response, redirect
+from werkzeug.middleware.proxy_fix import ProxyFix
 from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from backend.routes.upload import upload_bp
 from backend.routes.contact import contact_bp
@@ -15,6 +16,12 @@ app = Flask(
     static_folder="static",
     template_folder="templates"
 )
+
+# Trust X-Forwarded-* headers from 2 proxy hops: Cloudflare, then Render's own
+# load balancer. Without this, request.remote_addr / request.scheme reflect
+# the proxy, not the real client — breaks scheme detection (http vs https)
+# and IP-based rate limiting elsewhere in the app.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 app.secret_key = FLASK_SECRET_KEY
 app.permanent_session_lifetime = timedelta(hours=24)
