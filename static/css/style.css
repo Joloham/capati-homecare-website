@@ -132,7 +132,7 @@ img {
 }
 
 #navbar-container .nav-cta {
-  background: var(--sage);
+  background: var(--sage-dark);
   color: white !important;
   padding: 0.5rem 1.2rem;
   border-radius: 50px;
@@ -145,7 +145,7 @@ img {
 }
 
 #navbar-container .nav-cta:hover {
-  background: var(--sage-dark) !important;
+  background: #4A6650 !important;
   color: white !important;
   transform: translateY(-1px);
 }
@@ -219,12 +219,12 @@ img {
 }
 
 .btn-primary {
-  background: var(--sage);
+  background: var(--sage-dark);
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--sage-dark);
+  background: #4A6650;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(92, 122, 96, 0.3);
 }
@@ -237,7 +237,7 @@ img {
 }
 
 .btn-secondary:hover {
-  background: var(--sage);
+  background: var(--sage-dark);
   color: white;
   transform: translateY(-2px);
 }
@@ -256,7 +256,7 @@ section {
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--terracotta);
+  color: #9C4E2E;
   margin-bottom: 0.5rem;
 }
 
