@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template, jsonify, Response, redirect
+from flask import Flask, send_from_directory, render_template, jsonify, Response, redirect, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 from backend.config import FLASK_SECRET_KEY, SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from backend.routes.upload import upload_bp
@@ -41,6 +41,10 @@ def add_security_headers(response):
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+
+    if request.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "public, max-age=604800"
+
     return response
 
 # Public config for frontend JS
