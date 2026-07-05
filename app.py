@@ -8,7 +8,7 @@ from supabase import create_client
 from datetime import timedelta
 import os
 
-VALID_PAGES = {"about", "our-story", "services", "gallery", "pricing", "faq", "contact"}
+VALID_PAGES = {"about", "our-story", "services", "gallery", "faq", "contact"}
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(
@@ -73,7 +73,7 @@ def sitemap():
         "/our-story",
         "/services",
         "/gallery",
-        "/pricing",
+        #"/pricing",
         "/faq",
         "/contact"
     ]
