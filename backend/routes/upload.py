@@ -69,7 +69,10 @@ def upload():
         supabase.storage.from_(BUCKET_NAME).upload(
             path=filename,
             file=compressed.read(),
-            file_options={"content-type": "image/webp"}
+            file_options={
+                "content-type": "image/webp",
+                "cache-control": "15552000"
+            }
         )
 
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
