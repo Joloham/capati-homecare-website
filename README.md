@@ -1,6 +1,6 @@
 # Golden Circle Homecare
 
-A production website for a homecare business in Marikina City, Philippines — built solo, from scratch.
+A production website for a homecare business in Marikina City, Philippines; built solo from scratch.
 
 **Live site:** https://www.goldencirclehomecare.com
 
@@ -8,7 +8,7 @@ A production website for a homecare business in Marikina City, Philippines — b
 
 ## Overview
 
-Golden Circle Homecare is a marketing + admin management site for a senior homecare service. It includes public-facing pages, a photo gallery, a contact form, and a password-protected admin dashboard for managing gallery photos and incoming inquiries.
+Golden Circle Homecare is a marketing + admin management site for a senior homecare service. It includes the web pages, a photo gallery, a contact form, and a password-protected admin dashboard for managing gallery photos and incoming inquiries.
 
 ---
 
@@ -79,5 +79,5 @@ Golden Circle Homecare is a marketing + admin management site for a senior homec
 
 ## Notes
 
-- Built and iterated with heavy use of real diagnostic tools throughout (Google Search Console, Cloudflare Analytics, Lighthouse, SSL Labs, Mozilla Observatory) rather than assumptions.
+- Built and iterated with heavy use of real diagnostic tools throughout (Google PageSpeed Insights, Cloudflare Analytics, WebPageTest, Blacklight Privacy Scan, Qualys SSL Labs, Mozilla Observatory) rather than assumptions.
 - Used AI and Github repos to generate initial code, debug issues, and suggest changes/improvements/features.
