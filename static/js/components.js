@@ -60,14 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
     el.getBoundingClientRect().top >= window.innerHeight * 0.9;
 
   const applyStagger = (elements, step = 70, maxDelay = 350) => {
-    let visibleIndex = 0;
+    // Read phase first — all layout reads before any writes, avoids forced reflow
+    const toAnimate = elements.filter(shouldAnimate);
 
-    elements.forEach(el => {
-      if (!shouldAnimate(el)) return;
-
-      const delay = Math.min(visibleIndex * step, maxDelay);
-      visibleIndex += 1;
-
+    // Write phase — no reads interleaved
+    toAnimate.forEach((el, index) => {
+      const delay = Math.min(index * step, maxDelay);
       el.classList.add("fade-in");
       el.style.transitionDelay = `${delay}ms`;
       observer.observe(el);
