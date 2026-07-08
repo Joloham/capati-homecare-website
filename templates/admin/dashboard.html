@@ -7,6 +7,46 @@
   <title>Dashboard – Golden Circle Homecare</title>
   <link rel="stylesheet" href="/static/css/style.css"/>
   <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
+  <style>
+    /* Mobile/tablet default: single column, unchanged from before */
+    .dashboard-columns {
+      display: block;
+    }
+
+    /* Desktop / larger tablets (landscape iPad and up): side-by-side layout
+       so messages use the empty right-hand space instead of requiring a
+       full page scroll past the gallery to reach them. */
+    @media (min-width: 1024px) {
+      .dashboard-content {
+        max-width: 1600px;
+      }
+
+      .dashboard-columns {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 2.5rem;
+        align-items: start;
+      }
+
+      .dashboard-gallery-col {
+        position: sticky;
+        top: 1rem;
+        max-height: calc(100vh - 9rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        min-height: 0;
+      }
+
+      .dashboard-messages-col {
+        position: sticky;
+        top: 1rem;
+        max-height: calc(100vh - 9rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        min-height: 0;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -23,49 +63,55 @@
 
   <div class="dashboard-content">
 
-    <h2 style="margin-bottom:0.25rem;">Photo Gallery</h2>
-    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:2rem;">Upload and manage photos shown in the public gallery.</p>
+    <div class="dashboard-columns">
 
-    <!-- Upload Zone -->
-    <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-      <div style="font-size:2rem;">📷</div>
-      <p>Click to select photos, or drag and drop here</p>
-      <p style="font-size:0.8rem;">Supports JPG, PNG, WEBP</p>
-    </div>
+      <div class="dashboard-gallery-col">
+        <h2 style="margin-bottom:0.25rem;">Photo Gallery</h2>
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:2rem;">Upload and manage photos shown in the public gallery.</p>
 
-    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;"/>
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <div style="font-size:2rem;">📷</div>
+          <p>Click to select photos, or drag and drop here</p>
+          <p style="font-size:0.8rem;">Supports JPG, PNG, WEBP</p>
+        </div>
 
-    <!-- Staging area -->
-    <div id="staging-area" style="display:none;margin-top:1.25rem;">
-      <p style="font-size:0.875rem;color:var(--text-mid);margin-bottom:0.75rem;">Ready to upload:</p>
-      <div id="staging-previews" class="uploaded-previews"></div>
-      <div style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
-        <button class="btn btn-primary" onclick="confirmUpload()">Upload All</button>
-        <button class="btn btn-secondary" onclick="clearStaging()">Clear</button>
-        <span id="staging-count" style="font-size:0.875rem;color:var(--text-light);"></span>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;"/>
+
+        <!-- Staging area -->
+        <div id="staging-area" style="display:none;margin-top:1.25rem;">
+          <p style="font-size:0.875rem;color:var(--text-mid);margin-bottom:0.75rem;">Ready to upload:</p>
+          <div id="staging-previews" class="uploaded-previews"></div>
+          <div style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+            <button class="btn btn-primary" onclick="confirmUpload()">Upload All</button>
+            <button class="btn btn-secondary" onclick="clearStaging()">Clear</button>
+            <span id="staging-count" style="font-size:0.875rem;color:var(--text-light);"></span>
+          </div>
+        </div>
+
+        <p id="upload-status" style="font-size:0.875rem;color:var(--sage-dark);margin-top:1rem;"></p>
+
+        <div id="upload-previews" class="uploaded-previews" style="display:none;"></div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
+
+        <h3 style="margin-bottom:1rem;">Existing Photos</h3>
+        <div id="existing-photos" class="uploaded-previews">
+          <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
+        </div>
       </div>
-    </div>
 
-    <p id="upload-status" style="font-size:0.875rem;color:var(--sage-dark);margin-top:1rem;"></p>
+      <div class="dashboard-messages-col">
+        <h2 style="margin-bottom:0.25rem;">Messages</h2>
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Contact form submissions from visitors.</p>
+        <div id="messages-list">
+          <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
+        </div>
+        <div style="text-align:center;margin-top:1rem;">
+          <button id="load-more-btn" onclick="loadMessages(true)" class="btn btn-secondary" style="display:none;">Load More</button>
+        </div>
+      </div>
 
-    <div id="upload-previews" class="uploaded-previews" style="display:none;"></div>
-
-    <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
-
-    <h3 style="margin-bottom:1rem;">Existing Photos</h3>
-    <div id="existing-photos" class="uploaded-previews">
-      <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
-    </div>
-
-    <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
-
-    <h2 style="margin-bottom:0.25rem;">Messages</h2>
-    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Contact form submissions from visitors.</p>
-    <div id="messages-list">
-      <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
-    </div>
-    <div style="text-align:center;margin-top:1rem;">
-      <button id="load-more-btn" onclick="loadMessages(true)" class="btn btn-secondary" style="display:none;">Load More</button>
     </div>
 
   </div>
