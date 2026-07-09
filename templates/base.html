@@ -11,45 +11,65 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32.png"/>
         <link rel="icon" type="image/png" sizes="64x64" href="/static/images/favicon-64.png"/>
         <link rel="apple-touch-icon" href="/static/images/favicon-apple.png"/>
+        <link rel="canonical" href="https://www.goldencirclehomecare.com{% block canonical %}/{% endblock %}">
         <meta property="og:title" content="{% block og_title %}Golden Circle Homecare{% endblock %}"/>
         <meta property="og:description" content="{% block og_description %}Golden Circle Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home.{% endblock %}"/>
         <meta property="og:url" content="https://www.goldencirclehomecare.com{% block og_url %}/{% endblock %}"/>
         <meta property="og:image" content="/static/images/OGImage.png"/>
         <meta property="og:type" content="website"/>
         <meta property="og:site_name" content="Golden Circle Homecare">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{% block og_title %}Golden Circle Homecare{% endblock %}">
+        <meta name="twitter:description" content="{% block og_description %}Golden Circle Homecare provides certified, compassionate care for seniors in Marikina. Professional care with the warmth of a real home.{% endblock %}">
+        <meta name="twitter:image" content="https://www.goldencirclehomecare.com/static/images/OGImage.png">
 
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "Golden Circle Homecare",
-          "alternateName": ["Golden Circle Homecare", "Golden Circle Homecare OPC"],
-          "url": "https://www.goldencirclehomecare.com"
-        }
-        </script>
+            <!-- Website Schema -->
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": "https://www.goldencirclehomecare.com/#website",
+              "url": "https://www.goldencirclehomecare.com",
+              "name": "Golden Circle Homecare",
+              "alternateName": "Golden Circle Homecare OPC",
+              "description": "Certified, compassionate homecare for seniors in Marikina City, Metro Manila.",
+              "publisher": {
+                "@id": "https://www.goldencirclehomecare.com/#organization"
+              }
+            }
+            </script>
 
-        <!-- TODO: add "telephone" to the JSON-LD below once the real business
-             number is set — a placeholder number would hurt local SEO, not
-             help it. Same goes for "openingHoursSpecification" for hours. -->
+            <!-- Business Schema -->
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "AdultCareHome",
+              "@id": "https://www.goldencirclehomecare.com/#organization",
+              "name": "Golden Circle Homecare",
+              "alternateName": "Golden Circle Homecare OPC",
+              "description": "Certified, compassionate homecare for seniors in Marikina City, Metro Manila.",
+              "url": "https://www.goldencirclehomecare.com",
+              "telephone": "+639661742166",
+              "email": "goldencirclehc@gmail.com",
+              "logo": "https://www.goldencirclehomecare.com/static/images/VerticalLogoTP.png",
+              "mainEntityOfPage": {
+                "@id": "https://www.goldencirclehomecare.com/#website"
+              }
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "43 Gold Street, Concepcion Dos",
+                "addressLocality": "Marikina City",
+                "addressRegion": "Metro Manila",
+                "postalCode": "1811",
+                "addressCountry": "PH"
+              },
+              "sameAs": [
+                "https://www.facebook.com/Golden-Circle-Homecare"
+              ],
+              "hasMap": "https://www.google.com/maps/place/Golden+Circle+Homecare/@14.6415629,121.1151162,19.5z/data=!4m7!3m6!1s0x3397b9bbbc6c5333:0xb87366f52a6405d3!4b1!8m2!3d14.6415584!4d121.1152084!16s%2Fg%2F11zcs_p__y"
+            }
+            </script>
 
-        <!--<script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          "name": "Golden Circle Homecare",
-          "image": "https://www.goldencirclehomecare.com/static/images/HorizontalLogo.png",
-          "url": "https://www.goldencirclehomecare.com",
-          "description": "Certified, compassionate homecare for seniors in Marikina City, Metro Manila.",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "43 Gold Street, Concepcion Dos",
-            "addressLocality": "Marikina City",
-            "addressRegion": "Metro Manila",
-            "postalCode": "1811",
-            "addressCountry": "PH"
-          }
-          } -->
-        </script>
         {% block extra_head %}{% endblock %}
     </head>
     <body>
