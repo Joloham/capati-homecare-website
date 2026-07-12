@@ -5,9 +5,11 @@
 :root {
   --cream:        #FAF7F2;
   --warm-white:   #FFFFFF;
-  --sage:         #7A9E7E;
-  --sage-dark:    #5C7A60;
-  --sage-light:   #A8C5AB;
+  /* Note: variable names kept as --sage* to avoid touching every call site,
+     but values are now a gold palette per rebrand — greens removed entirely. */
+  --sage:         #B8873A;
+  --sage-dark:    #AB7D2B;
+  --sage-light:   #D9A94F;
   --terracotta:   #C97B5A;
   --gold:         #9B7226;
   --text-dark:    #2E2E2E;
@@ -147,7 +149,7 @@ img {
 }
 
 #navbar-container .nav-cta:hover {
-  background: #4A6650 !important;
+  background: #6B4A1A !important;
   color: white !important;
   transform: translateY(-1px);
 }
@@ -171,7 +173,7 @@ img {
 /* ── HERO ── */
 
 .hero {
-  background: linear-gradient(135deg, #e8f0e9 0%, #f5ede4 100%);
+  background: linear-gradient(135deg, #f5e9d0 0%, #f5ede4 100%);
   padding: 5rem 2.5rem;
   text-align: center;
 }
@@ -226,7 +228,7 @@ img {
 }
 
 .btn-primary:hover {
-  background: #4A6650;
+  background: #6B4A1A;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(92, 122, 96, 0.3);
 }
@@ -473,7 +475,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e8f0e9, #f5ede4);
+  background: linear-gradient(135deg, #f5e9d0, #f5ede4);
 }
 
 .admin-box {
