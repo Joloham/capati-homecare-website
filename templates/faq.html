@@ -1,9 +1,45 @@
 {% extends "base.html" %}
-{% block title %}FAQ – Golden Circle Homecare{% endblock %}
-{% block og_title %}FAQ – Golden Circle Homecare{% endblock %}
+{% block title %}Senior Homecare FAQ | Golden Circle Homecare{% endblock %}
+{% block description %}Find answers about enrollment, services, caregiver training, visits, emergencies, pricing, medical needs, and move-in at Golden Circle Homecare.{% endblock %}
+{% block canonical %}/faq{% endblock %}
+{% block og_title %}Senior Homecare FAQ | Golden Circle Homecare{% endblock %}
+{% block og_description %}Answers to common questions about care, enrollment, safety, pricing, and visits.{% endblock %}
 {% block og_url %}/faq{% endblock %}
 
 {% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I enroll a loved one?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Send a message through the Contact page or call Golden Circle Homecare. A brief assessment will be scheduled to understand your loved one's needs and recommend a care plan."}
+    },
+    {
+      "@type": "Question",
+      "name": "Are your caregivers trained and background-checked?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Caregivers are trained, experienced, and carefully screened to provide safe, professional, and compassionate care."}
+    },
+    {
+      "@type": "Question",
+      "name": "What happens in case of a medical emergency?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Golden Circle Homecare follows an emergency protocol, promptly informs family members, has an on-call medical doctor, and arranges transport to a nearby hospital when needed."}
+    },
+    {
+      "@type": "Question",
+      "name": "What services are included in your care?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Services include 24/7 monitoring, assistance with daily living, medication management, home-cooked meals, and social activities for overall well-being."}
+    },
+    {
+      "@type": "Question",
+      "name": "How is pricing determined?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Rates depend on the resident's care needs and are determined during a personal assessment. Families may contact Golden Circle Homecare for a personalized quotation."}
+    }
+  ]
+}
+</script>
 <style>
   .faq-item {
     border: 1px solid var(--border);
@@ -61,7 +97,7 @@
 <main>
   <section>
     <p class="section-label">Got Questions?</p>
-    <h2 class="section-title">Frequently Asked Questions</h2>
+    <h1 class="section-title">Frequently Asked Questions</h1>
     <p class="section-sub">Everything you need to know about Golden Circle Homecare. Can't find your answer? <a href="/contact" style="color:var(--sage-dark);">Contact us.</a></p>
 
     <div style="max-width:720px;">
@@ -105,7 +141,7 @@
 
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">How is pricing determined?<span class="faq-icon">+</span></button>
-        <div class="faq-answer">Rates vary based on your loved one's care needs and are determined during a personal assessment. Contact us for a personalized quotation    .</div>
+        <div class="faq-answer">Rates vary based on your loved one's care needs and are determined during a personal assessment. Contact us for a personalized quotation.</div>
       </div>
 
       <div class="faq-item">

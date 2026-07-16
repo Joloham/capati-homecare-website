@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Page Not Found – Golden Circle Homecare{% endblock %}
-{% block description %}Page not found – Golden Circle Homecare{% endblock %}
+{% block description %}The requested page could not be found on Golden Circle Homecare.{% endblock %}
+{% block canonical %}{{ request.path }}{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
 
 {% block body %}
 <div id="navbar-container">
@@ -10,7 +13,7 @@
 <main style="flex:1">
   <section style="text-align:center;padding:6rem 2.5rem;">
     <p class="section-label">404 – Not Found</p>
-    <h2 class="section-title">This Page Doesn't Exist</h2>
+    <h1 class="section-title">This Page Doesn't Exist</h1>
     <p class="section-sub" style="max-width:480px;margin:0 auto 2.5rem;">
       The page you're looking for may have been moved or never existed. Let's get you back on track.
     </p>
