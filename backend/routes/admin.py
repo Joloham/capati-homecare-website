@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 from functools import wraps
 import requests as http
 import time
@@ -79,8 +79,11 @@ def login():
         else:
             return jsonify({"error": data.get("error_description", "Invalid credentials")}), 401
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        current_app.logger.exception("Admin login request failed")
+        return jsonify({
+            "error": "Unable to log in right now."
+        }), 500
 
 # ── REFRESH TOKEN ──
 
@@ -110,8 +113,11 @@ def refresh():
             session.clear()
             return jsonify({"error": "Session expired, please log in again"}), 401
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        current_app.logger.exception("Admin token refresh failed")
+        return jsonify({
+            "error": "Unable to refresh the session right now."
+        }), 500
 
 # ── LOGOUT ──
 

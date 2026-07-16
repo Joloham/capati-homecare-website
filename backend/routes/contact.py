@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
 import time
@@ -71,5 +71,8 @@ def contact():
 
         return jsonify({"success": True}), 200
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+except Exception:
+    current_app.logger.exception("Contact submission failed")
+    return jsonify({
+        "error": "Unable to process the request right now."
+    }), 500

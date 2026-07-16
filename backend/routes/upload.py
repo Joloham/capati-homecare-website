@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from PIL import Image, ImageOps
@@ -84,5 +84,8 @@ def upload():
 
         return jsonify({"url": public_url, "filename": filename}), 200
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+except Exception:
+    current_app.logger.exception("Gallery image upload failed")
+    return jsonify({
+        "error": "Unable to upload the image right now."
+    }), 500
