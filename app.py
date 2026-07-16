@@ -17,14 +17,10 @@ app = Flask(
     template_folder="templates"
 )
 
-# Trust X-Forwarded-* headers from 2 proxy hops: Cloudflare, then Render's own
-# load balancer. Without this, request.remote_addr / request.scheme reflect
-# the proxy, not the real client — breaks scheme detection (http vs https)
-# and IP-based rate limiting elsewhere in the app.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=2, x_host=1)
 
 app.secret_key = FLASK_SECRET_KEY
-# app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
 app.permanent_session_lifetime = timedelta(hours=24)
 
 # Register API blueprints
