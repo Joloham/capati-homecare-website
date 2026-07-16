@@ -84,8 +84,8 @@ def upload():
 
         return jsonify({"url": public_url, "filename": filename}), 200
 
-except Exception:
-    current_app.logger.exception("Gallery image upload failed")
-    return jsonify({
-        "error": "Unable to upload the image right now."
-    }), 500
+    except Exception:
+        current_app.logger.exception("Gallery image upload failed")
+        return jsonify({
+            "error": "Unable to upload the image right now."
+        }), 500

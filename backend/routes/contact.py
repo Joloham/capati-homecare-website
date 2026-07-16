@@ -71,8 +71,8 @@ def contact():
 
         return jsonify({"success": True}), 200
 
-except Exception:
-    current_app.logger.exception("Contact submission failed")
-    return jsonify({
-        "error": "Unable to process the request right now."
-    }), 500
+    except Exception:
+        current_app.logger.exception("Contact submission failed")
+        return jsonify({
+            "error": "Unable to process the request right now."
+        }), 500
