@@ -68,7 +68,7 @@ def login():
             json={"email": email, "password": password}
         )
 
-        data = res.json()
+        data = request.get_json(silent=True) or {}
 
         if res.ok and data.get("access_token"):
             session["sb_access_token"]  = data["access_token"]
@@ -103,7 +103,7 @@ def refresh():
             json={"refresh_token": refresh_token}
         )
 
-        data = res.json()
+        data = request.get_json(silent=True) or {}
 
         if res.ok and data.get("access_token"):
             session["sb_access_token"]  = data["access_token"]

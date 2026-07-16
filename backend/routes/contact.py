@@ -35,7 +35,7 @@ def is_rate_limited(ip):
 def contact():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     name = data.get("name", "").strip()
     phone = data.get("phone", "").strip()
