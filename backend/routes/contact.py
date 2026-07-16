@@ -33,11 +33,7 @@ def is_rate_limited(ip):
 
 @contact_bp.route("/contact", methods=["POST"])
 def contact():
-    cleanup_rate_limit()
     ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
-
-    if is_rate_limited(ip):
-        return jsonify({"error": "Too many requests. Please wait before submitting again."}), 429
 
     data = request.get_json()
 
@@ -46,13 +42,13 @@ def contact():
     email = data.get("email", "").strip()
     message = data.get("message", "").strip()
 
-    if not name or not email or not message:
+    if not name or not phone or not email or not message:
         return jsonify({"error": "All fields are required"}), 400
 
     if len(name) > LIMITS["name"]:
         return jsonify({"error": f"Name must be {LIMITS['name']} characters or less"}), 400
 
-    if phone and len(phone) > LIMITS["phone"]:
+    if len(phone) > LIMITS["phone"]:
         return jsonify({"error": f"Phone must be {LIMITS['phone']} characters or less"}), 400
 
     if len(email) > LIMITS["email"]:
@@ -60,6 +56,10 @@ def contact():
 
     if len(message) > LIMITS["message"]:
         return jsonify({"error": f"Message must be {LIMITS['message']} characters or less"}), 400
+
+    cleanup_rate_limit()
+    if is_rate_limited(ip):
+        return jsonify({"error": "Too many requests. Please wait before submitting again."}), 429
 
     try:
         supabase.table("contacts").insert({

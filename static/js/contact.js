@@ -1,7 +1,4 @@
 const LIMITS = {
-  name:    50,
-  phone:   20,
-  email:   50,
   message: 1000
 };
 
@@ -18,36 +15,6 @@ async function submitContact() {
 
   msg.className   = "form-message";
   msg.textContent = "";
-
-  if (!name || !email || !message) {
-    msg.textContent = "Please fill in all required fields.";
-    msg.classList.add("error");
-    return;
-  }
-
-  if (name.length > LIMITS.name) {
-    msg.textContent = `Name must be ${LIMITS.name} characters or less.`;
-    msg.classList.add("error");
-    return;
-  }
-
-  if (phone && phone.length > LIMITS.phone) {
-    msg.textContent = `Phone must be ${LIMITS.phone} characters or less.`;
-    msg.classList.add("error");
-    return;
-  }
-
-  if (email.length > LIMITS.email) {
-    msg.textContent = `Email must be ${LIMITS.email} characters or less.`;
-    msg.classList.add("error");
-    return;
-  }
-
-  if (message.length > LIMITS.message) {
-    msg.textContent = `Message must be ${LIMITS.message} characters or less.`;
-    msg.classList.add("error");
-    return;
-  }
 
   try {
     const res = await fetch("/api/contact", {
