@@ -183,7 +183,7 @@ async function confirmUpload() {
         const publicUrl = data.url;
         const wrapper   = createPhotoCard(publicUrl, data.filename, null);
 
-        const placeholder = existingPhotos.querySelector("p");
+        const placeholder = existingPhotos.querySelector(":scope > p");
         if (placeholder) placeholder.remove();
 
         existingPhotos.prepend(wrapper);
@@ -196,8 +196,12 @@ async function confirmUpload() {
     }
   }
 
-  statusEl.textContent = `${successCount} of ${stagedFiles.length} photo${stagedFiles.length > 1 ? "s" : ""} uploaded successfully.`;
+  const totalFiles = stagedFiles.length;
+
   clearStaging();
+
+  statusEl.textContent =
+    `${successCount} of ${totalFiles} photo${totalFiles > 1 ? "s" : ""} uploaded successfully.`;
 }
 
 
@@ -218,6 +222,8 @@ function createPhotoCard(url, filename, caption) {
         <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>
       </div>
     </div>`;
+
+  wrapper.querySelector(".photo-caption").dataset.caption = caption || "";
 
   return wrapper;
 }
