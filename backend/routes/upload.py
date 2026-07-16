@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
+from werkzeug.utils import secure_filename
 from PIL import Image, ImageOps
 import time
 import io
@@ -64,7 +65,10 @@ def upload():
 
     try:
         compressed = compress_image(file)
-        filename = f"{int(time.time() * 1000)}_{(file.filename or 'image').rsplit('.', 1)[0]}.webp"
+        base_name = secure_filename(
+            (file.filename or "image").rsplit(".", 1)[0]
+        ) or "image"
+        filename = f"{int(time.time() * 1000)}_{base_name}.webp"
 
         supabase.storage.from_(BUCKET_NAME).upload(
             path=filename,
