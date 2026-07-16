@@ -51,7 +51,7 @@ def login():
     if is_login_rate_limited(ip):
         return jsonify({"error": "Too many login attempts. Please wait before trying again."}), 429
 
-    data     = request.get_json()
+    data     = request.get_json(silent=True) or {}
     email    = data.get("email", "").strip()
     password = data.get("password", "")
 
@@ -68,7 +68,7 @@ def login():
             json={"email": email, "password": password}
         )
 
-        data = request.get_json(silent=True) or {}
+        data = res.json()
 
         if res.ok and data.get("access_token"):
             session["sb_access_token"]  = data["access_token"]
@@ -103,7 +103,7 @@ def refresh():
             json={"refresh_token": refresh_token}
         )
 
-        data = request.get_json(silent=True) or {}
+        data = res.json()
 
         if res.ok and data.get("access_token"):
             session["sb_access_token"]  = data["access_token"]
