@@ -51,9 +51,20 @@ def login():
     if is_login_rate_limited(ip):
         return jsonify({"error": "Too many login attempts. Please wait before trying again."}), 429
 
-    data     = request.get_json(silent=True) or {}
-    email    = data.get("email", "").strip()
-    password = data.get("password", "")
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid JSON body"}), 400
+
+    email = data.get("email")
+    password = data.get("password")
+
+    if not isinstance(email, str) or not isinstance(password, str):
+        return jsonify({"error": "Email and password must be text"}), 400
+
+    email = email.strip()
+
 
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
