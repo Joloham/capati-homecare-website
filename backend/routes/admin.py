@@ -76,7 +76,8 @@ def login():
                 "Content-Type": "application/json",
                 "apikey": SUPABASE_PUBLISHABLE_KEY
             },
-            json={"email": email, "password": password}
+            json={"email": email, "password": password},
+            timeout=10
         )
 
         data = res.json()
@@ -111,7 +112,8 @@ def refresh():
                 "Content-Type": "application/json",
                 "apikey": SUPABASE_PUBLISHABLE_KEY
             },
-            json={"refresh_token": refresh_token}
+            json={"refresh_token": refresh_token},
+            timeout=10
         )
 
         data = res.json()
