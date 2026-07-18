@@ -36,7 +36,7 @@ def is_rate_limited(ip):
 
 @contact_bp.route("/contact", methods=["POST"])
 def contact():
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
+    ip = request.remote_addr or "unknown"
 
     data = request.get_json(silent=True)
 
