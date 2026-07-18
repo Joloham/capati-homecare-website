@@ -1,7 +1,6 @@
 # Golden Circle Homecare
 
-A production website and administration system developed for a homecare provider in Marikina City, Philippines. Built and deployed independently from the ground up.
-(Currently deployed as the business' official website and administrative portal.)
+A production website and administration system developed and deployed independently for a homecare provider in Marikina City, Philippines. It currently serves as the business's official website and administrative portal.
 
 **Live site:** https://www.goldencirclehomecare.com
 
@@ -49,7 +48,7 @@ Golden Circle Homecare is a marketing + admin management site for a senior homec
 - **Contact form** — stored in Supabase, rate-limited against spam/abuse
 - **Photo gallery** — server-side image compression + WebP conversion on upload
 - **Admin authentication** — Supabase Auth + Flask sessions, with IP-based login rate limiting
-- **Dynamic SEO assets** — auto-generated `sitemap.xml`, `robots.txt`
+- **SEO assets** — generated `sitemap.xml` and a served `robots.txt`
 - **Structured data** — `LocalBusiness` and `WebSite` JSON-LD schema, Open Graph tags
 - **Caching** — Cloudflare Cache Rules for static assets, 1-week browser cache on `/static/*`, 6-month cache-control on gallery images stored in Supabase
 
@@ -59,26 +58,28 @@ Golden Circle Homecare is a marketing + admin management site for a senior homec
 
 - Fixed stored XSS vulnerabilities (photo captions, contact email field)
 - IP-based rate limiting on admin login
-- Full security header hardening: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy
+- Security headers: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy
 - Secure session cookies (`SESSION_COOKIE_SECURE`)
 - `ProxyFix` middleware for correct client IP/scheme detection behind the Cloudflare → Render proxy chain
 - Bot management via Cloudflare (Bot Fight Mode, AI crawler controls) — verified against real firewall event logs
 
 ---
 
-## Audit Results
+## Recorded Audit Results
+
+These are point-in-time production measurements recorded during the July 2026 audit. Results may change after deployments, content updates, third-party changes, or visual redesigns.
 
 | Tool | Result |
 |---|---|
 | SSL Labs (Qualys) | A+ |
 | Mozilla HTTP Observatory | B (75/100) — CSP intentionally deferred for now due to inline JS/CSS architecture |
 | Blacklight Privacy Scan | Zero trackers, zero third-party cookies |
-| Google PageSpeed Insights | Desktop: 100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO. Mobile: 92 Performance / 100 / 100 / 100 |
-| WebPageTest | ~0.6s FCP/LCP, zero cumulative layout shift, no render-blocking third parties |
+| Google PageSpeed Insights | Best recorded — Desktop: 100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO. Mobile: 92 Performance / 100 / 100 / 100 |
+| WebPageTest | Recorded ~0.6s FCP/LCP with zero cumulative layout shift |
 
 ---
 
 ## Notes
 
 - Built and iterated with heavy use of real diagnostic tools throughout (Google PageSpeed Insights, Cloudflare Analytics, WebPageTest, Blacklight Privacy Scan, Qualys SSL Labs, Mozilla Observatory) rather than assumptions.
-- This project was developed with the assistance of AI and some open-source references to speed up development, create initial implementations, debug issues, and evaluate different changes/features. Every feature was reviewed, modified where necessary, integrated into the application, and validated through testing before deployment.
+- This project was developed with the assistance of AI and open-source references to accelerate initial implementation, debugging, and evaluation. Each feature was manually reviewed, adapted where necessary, integrated into the application, and tested before deployment

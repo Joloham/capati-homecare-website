@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, current_app
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY
 import time
+import re
 
 contact_bp = Blueprint("contact", __name__)
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
@@ -9,9 +10,11 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 LIMITS = {
     "name": 50,
     "phone": 20,
-    "email": 50,
+    "email": 254,
     "message": 1000
 }
+
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 # Simple in-memory rate limiter — 1 submission per IP per 60 seconds
 _rate_limit = {}
@@ -35,15 +38,26 @@ def is_rate_limited(ip):
 def contact():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
 
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
 
-    name = data.get("name", "").strip()
-    phone = data.get("phone", "").strip()
-    email = data.get("email", "").strip()
-    message = data.get("message", "").strip()
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid JSON body"}), 400
+
+    required_fields = ("name", "phone", "email", "message")
+
+    if any(not isinstance(data.get(field), str) for field in required_fields):
+        return jsonify({"error": "All fields must be text"}), 400
+
+    name = data["name"].strip()
+    phone = data["phone"].strip()
+    email = data["email"].strip()
+    message = data["message"].strip()
 
     if not name or not phone or not email or not message:
         return jsonify({"error": "All fields are required"}), 400
+
+    if not EMAIL_PATTERN.fullmatch(email):
+        return jsonify({"error": "Please enter a valid email address"}), 400
 
     if len(name) > LIMITS["name"]:
         return jsonify({"error": f"Name must be {LIMITS['name']} characters or less"}), 400
