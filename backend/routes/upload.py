@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify, current_app
 from supabase import create_client
 from backend.config import SUPABASE_URL, SUPABASE_SECRET_KEY, SUPABASE_PUBLISHABLE_KEY
 from werkzeug.utils import secure_filename
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, UnidentifiedImageError
+import warnings
 import time
 import io
 
@@ -10,8 +11,12 @@ upload_bp = Blueprint("upload", __name__)
 supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP"}
+MAX_IMAGE_PIXELS = 48_000_000
 BUCKET_NAME = "gallery"
-WEBP_QUALITY = 80
+WEBP_QUALITY = 70
+
+Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -30,22 +35,35 @@ def verify_token(req):
         return False
 
 def compress_image(file):
-    img = Image.open(file)
+    file.stream.seek(0)
 
-    # Reorient based on EXIF data (fixes sideways phone photos)
-    img = ImageOps.exif_transpose(img)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", Image.DecompressionBombWarning)
 
-    if img.mode in ("RGBA", "P", "LA"):
-        img = img.convert("RGB")
+        with Image.open(file.stream) as original:
+            if original.format not in ALLOWED_IMAGE_FORMATS:
+                raise ValueError("Unsupported image format")
 
-    # Resize image to a max of 1600x1600 while maintaining aspect ratio
-    img.thumbnail((1600, 1600), Image.Resampling.LANCZOS if hasattr(Image, "Resampling") else Image.LANCZOS)
+            if original.width * original.height > MAX_IMAGE_PIXELS:
+                raise ValueError("Image dimensions are too large")
 
-    buffer = io.BytesIO()
-    # Aggressively compress and save as modern WebP
-    img.save(buffer, format="WEBP", quality=WEBP_QUALITY, method=6, optimize=True)
-    buffer.seek(0)
-    return buffer
+            # Fully decode the file so corrupted images fail before upload
+            original.load()
+
+            # Reorient based on EXIF data (fixes sideways phone photos)
+            img = ImageOps.exif_transpose(original)
+
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+
+            # Resize image to a max of 1600x1600 while maintaining aspect ratio
+            img.thumbnail((1600, 1600), Image.Resampling.LANCZOS if hasattr(Image, "Resampling") else Image.LANCZOS)
+
+            buffer = io.BytesIO()
+            # Aggressively compress and save as modern WebP
+            img.save(buffer, format="WEBP", quality=WEBP_QUALITY, method=6, optimize=True)
+            buffer.seek(0)
+            return buffer
 
 @upload_bp.route("/upload", methods=["POST"])
 def upload():
@@ -65,6 +83,22 @@ def upload():
 
     try:
         compressed = compress_image(file)
+
+    except (
+        UnidentifiedImageError,
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+        ValueError,
+        OSError
+    ):
+        return jsonify({
+            "error": "Invalid, corrupted or excessively large image."
+        }), 400
+
+    filename = None
+    storage_uploaded = False
+
+    try:
         base_name = secure_filename(
             (file.filename or "image").rsplit(".", 1)[0]
         ) or "image"
@@ -79,6 +113,8 @@ def upload():
             }
         )
 
+        storage_uploaded = True
+
         public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(filename)
 
         supabase.table("gallery").insert({
@@ -90,6 +126,15 @@ def upload():
 
     except Exception:
         current_app.logger.exception("Gallery image upload failed")
+
+        if storage_uploaded and filename:
+            try:
+                supabase.storage.from_(BUCKET_NAME).remove([filename])
+            except Exception:
+                current_app.logger.exception(
+                    "Failed to clean up orphaned gallery image"
+                )
+
         return jsonify({
             "error": "Unable to upload the image right now."
         }), 500

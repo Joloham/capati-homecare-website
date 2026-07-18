@@ -17,6 +17,8 @@ app = Flask(
     template_folder="templates"
 )
 
+app.config["MAX_CONTENT_LENGTH"] = 3_300_000
+
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=2, x_host=1)
 
 app.secret_key = FLASK_SECRET_KEY
@@ -123,6 +125,12 @@ def serve_admin_page(page):
 @app.route("/robots.txt")
 def robots():
     return send_from_directory(BASE_DIR, "robots.txt")
+
+@app.errorhandler(413)
+def request_too_large(error):
+    return jsonify({
+        "error": "Image is too large. Maximum upload size is 3MB."
+    }), 413
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=5000)
