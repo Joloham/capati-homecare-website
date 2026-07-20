@@ -26,7 +26,6 @@ app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.permanent_session_lifetime = timedelta(hours=24)
-app.permanent_session_lifetime = timedelta(hours=24)
 
 # Register API blueprints
 app.register_blueprint(upload_bp, url_prefix="/api")
