@@ -46,7 +46,11 @@ def is_login_rate_limited(ip):
 @admin_bp.route("/api/login", methods=["POST"])
 def login():
     cleanup_login_rate_limit()
-    ip =request.remote_addr or "unknown"
+    ip = (
+        request.headers.get("CF-Connecting-IP", "").strip()
+        or request.remote_addr
+        or "unknown"
+    )
 
     if is_login_rate_limited(ip):
         return jsonify({"error": "Too many login attempts. Please wait before trying again."}), 429
