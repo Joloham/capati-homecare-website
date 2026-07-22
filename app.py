@@ -17,7 +17,7 @@ app = Flask(
     template_folder="templates"
 )
 
-app.config["MAX_CONTENT_LENGTH"] = 3_300_000
+app.config["MAX_CONTENT_LENGTH"] = 5_200_000
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=2, x_host=1)
 
