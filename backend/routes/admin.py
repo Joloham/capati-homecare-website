@@ -1,10 +1,16 @@
 from flask import Blueprint, request, jsonify, session, current_app
 from functools import wraps
+from supabase import create_client
 import requests as http
 import time
-from backend.config import SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
+from backend.config import (
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    SUPABASE_SECRET_KEY
+)
 
 admin_bp = Blueprint("admin", __name__)
+admin_supabase = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
 # ── LOGIN REQUIRED DECORATOR ──
 
@@ -153,3 +159,43 @@ def me():
         "email": session.get("sb_user_email", "Admin"),
         "token": session.get("sb_access_token")
     })
+
+# ── GALLERY ORDER ──
+
+@admin_bp.route("/api/gallery/reorder", methods=["POST"])
+def reorder_gallery():
+    if not session.get("sb_access_token"):
+        return jsonify({"error": "Not authenticated"}), 401
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid JSON body"}), 400
+
+    filenames = data.get("filenames")
+
+    if (
+        not isinstance(filenames, list)
+        or not filenames
+        or len(filenames) > 500
+        or any(
+            not isinstance(filename, str) or not filename.strip()
+            for filename in filenames
+        )
+        or len(filenames) != len(set(filenames))
+    ):
+        return jsonify({"error": "Invalid gallery order"}), 400
+
+    try:
+        admin_supabase.rpc(
+            "reorder_gallery",
+            {"ordered_filenames": filenames}
+        ).execute()
+
+        return jsonify({"success": True}), 200
+
+    except Exception:
+        current_app.logger.exception("Failed to save gallery order")
+        return jsonify({
+            "error": "Unable to save gallery order."
+        }), 500

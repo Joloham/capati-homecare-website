@@ -1,6 +1,7 @@
 let SUPABASE_URL = null;
 let SUPABASE_KEY = null;
 let BUCKET = "gallery";
+let gallerySortable = null;
 
 
 /* ── XSS SANITIZATION ── */
@@ -214,12 +215,12 @@ function createPhotoCard(url, filename, caption) {
   wrapper.style.cssText = "position:relative;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;";
 
   wrapper.innerHTML = `
-    <img src="${url}" alt="" style="width:100%;height:130px;object-fit:cover;cursor:pointer;" onclick="openLightbox('${url}')"/>
+    <img src="${url}" alt="" title="Drag to rearrange or click to preview" style="width:100%;height:150px;object-fit:cover;cursor:grab;touch-action:none;" onclick="openLightbox('${url}')"/>
     <div style="padding:0.5rem 0.6rem;">
       <p class="photo-caption" style="font-size:0.8rem;color:var(--text-mid);min-height:1.2em;">${caption ? sanitize(caption) : "<span style='color:var(--text-light);font-style:italic;'>No caption</span>"}</p>
       <div style="display:flex;gap:0.5rem;margin-top:0.4rem;">
-        <button onclick="editCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
-        <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>
+        <button onclick="editCaption(this, '${filename}')" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
+        <button onclick="deletePhoto('${filename}', this)" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>
       </div>
     </div>`;
 
@@ -246,8 +247,8 @@ function editCaption(btn, filename) {
 
   const actionDiv = btn.closest("div");
   actionDiv.innerHTML = `
-    <button onclick="saveCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:none;background:var(--sage);color:white;cursor:pointer;">Save</button>
-    <button onclick="cancelEdit(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-mid);cursor:pointer;">Cancel</button>`;
+    <button onclick="saveCaption(this, '${filename}')" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:none;background:var(--sage);color:white;cursor:pointer;">Save</button>
+    <button onclick="cancelEdit(this, '${filename}')" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-mid);cursor:pointer;">Cancel</button>`;
 }
 
 async function saveCaption(btn, filename) {
@@ -274,8 +275,8 @@ async function saveCaption(btn, filename) {
 
     const actionDiv = btn.closest("div");
     actionDiv.innerHTML = `
-      <button onclick="editCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
-      <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>`;
+      <button onclick="editCaption(this, '${filename}')" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
+      <button onclick="deletePhoto('${filename}', this)" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>`;
 
   } catch (err) {
     console.error(err);
@@ -291,12 +292,67 @@ function cancelEdit(btn, filename) {
 
   const actionDiv = btn.closest("div");
   actionDiv.innerHTML = `
-    <button onclick="editCaption(this, '${filename}')" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
-    <button onclick="deletePhoto('${filename}', this)" style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>`;
+    <button onclick="editCaption(this, '${filename}')" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--sage);background:transparent;color:var(--sage-dark);cursor:pointer;">Edit</button>
+    <button onclick="deletePhoto('${filename}', this)" style="flex:1;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:50px;border:1px solid var(--terracotta);background:transparent;color:var(--terracotta);cursor:pointer;">Delete</button>`;
 }
 
 
 /* ── DASHBOARD GALLERY ── */
+
+function enableGallerySorting() {
+  const container = document.getElementById("existing-photos");
+
+  if (!container) return;
+
+  if (gallerySortable) {
+    gallerySortable.destroy();
+  }
+
+  gallerySortable = Sortable.create(container, {
+    animation: 150,
+    handle: "img",
+    ghostClass: "gallery-drag-ghost",
+    onEnd: saveGalleryOrder
+  });
+}
+
+async function saveGalleryOrder() {
+  const container = document.getElementById("existing-photos");
+  const statusEl = document.getElementById("upload-status");
+
+  const filenames = Array.from(
+    container.querySelectorAll("[data-filename]")
+  ).map(card => card.dataset.filename);
+
+  statusEl.textContent = "Saving gallery order...";
+
+  try {
+    const res = await fetch("/api/gallery/reorder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ filenames })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 401) {
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || "Unable to save order");
+    }
+
+    statusEl.textContent = "Gallery order saved.";
+
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Failed to save gallery order. Reload before rearranging again.";
+  }
+}
 
 async function loadDashboardGallery() {
   await loadConfig();
@@ -306,7 +362,7 @@ async function loadDashboardGallery() {
   if (!container) return;
 
   try {
-    const res = await supabaseFetch(`${SUPABASE_URL}/rest/v1/gallery?order=created_at.desc`, {
+    const res = await supabaseFetch(`${SUPABASE_URL}/rest/v1/gallery?order=display_order.asc,created_at.desc`, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -326,6 +382,8 @@ async function loadDashboardGallery() {
       const card = createPhotoCard(url, row.filename, row.caption);
       container.appendChild(card);
     });
+
+    enableGallerySorting();
 
   } catch (err) {
     console.error(err);

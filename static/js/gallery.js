@@ -70,7 +70,7 @@ async function loadGallery() {
 
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/gallery?order=created_at.desc`,
+      `${SUPABASE_URL}/rest/v1/gallery?order=display_order.asc,created_at.desc`,
       {
         headers: {
           "apikey": SUPABASE_KEY,

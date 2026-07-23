@@ -22,7 +22,7 @@ app.config["MAX_CONTENT_LENGTH"] = 5_200_000
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=2, x_host=1)
 
 app.secret_key = FLASK_SECRET_KEY
-app.config["SESSION_COOKIE_SECURE"] = True
+#app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.permanent_session_lifetime = timedelta(hours=24)
