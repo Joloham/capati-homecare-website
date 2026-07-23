@@ -63,7 +63,7 @@ Golden Circle Homecare is a marketing + admin management site for a senior homec
 - `ProxyFix` middleware for correct client IP/scheme detection behind the Cloudflare → Render proxy chain
 - Bot management via Cloudflare (Bot Fight Mode, AI crawler controls) — verified against real firewall event logs
 - Server-side validation for contact form JSON, field types, lengths, and email format
-- Image upload protection with real-format validation, decompression limits, and a 3 MB file-size limit
+- Image upload protection with real-format validation, decompression limits, and a 5 MB file-size limit
 - 10-second timeouts for Supabase authentication requests
 
 ---

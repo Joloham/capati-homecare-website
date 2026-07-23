@@ -131,7 +131,7 @@ def robots():
 @app.errorhandler(413)
 def request_too_large(error):
     return jsonify({
-        "error": "Image is too large. Maximum upload size is 3MB."
+        "error": "Image is too large. Maximum upload size is 5MB."
     }), 413
 
 if __name__ == "__main__":
