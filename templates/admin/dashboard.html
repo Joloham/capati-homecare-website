@@ -18,9 +18,36 @@
       margin-bottom: 3.5rem;
     }
 
+    .dashboard-tabs {
+      display: none;
+    }
+
     .drag-handle {
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 8px;
+      background: rgba(40, 45, 38, 0.78);
+      color: white;
+      font-size: 1.1rem;
+      line-height: 1;
       cursor: grab;
       touch-action: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .drag-handle:hover {
+      background: rgba(40, 45, 38, 0.95);
+      transform: scale(1.05);
     }
 
     .drag-handle:active {
@@ -29,6 +56,65 @@
 
     .gallery-drag-ghost {
       opacity: 0.35;
+    }
+
+    @media (min-width: 768px) {
+      #existing-photos {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 767px) {
+      .dashboard-tabs {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+        padding: 0.25rem 0 1rem;
+        margin-bottom: 0.75rem;
+        background: var(--cream);
+      }
+
+      .dashboard-tab {
+        padding: 0.65rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 50px;
+        background: var(--warm-white);
+        color: var(--text-mid);
+        font-family: 'Lato', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .dashboard-tab.active {
+        border-color: var(--sage-dark);
+        background: var(--sage-dark);
+        color: white;
+      }
+
+      .dashboard-panel {
+        display: none;
+      }
+
+      .dashboard-panel.active {
+        display: block;
+      }
+
+      .dashboard-gallery-col {
+        margin-bottom: 0;
+      }
+
+      #existing-photos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      #existing-photos img {
+        height: clamp(110px, 35vw, 145px) !important;
+      }
     }
 
     /* Desktop / larger tablets (landscape iPad and up): side-by-side layout
@@ -82,9 +168,14 @@
 
   <div class="dashboard-content">
 
+    <div class="dashboard-tabs" role="tablist" aria-label="Dashboard sections">
+      <button type="button" class="dashboard-tab active" role="tab" aria-selected="true" aria-controls="dashboard-gallery" onclick="setDashboardTab('gallery')">Gallery</button>
+      <button type="button" class="dashboard-tab" role="tab" aria-selected="false" aria-controls="dashboard-messages" onclick="setDashboardTab('messages')">Messages</button>
+    </div>
+
     <div class="dashboard-columns">
 
-      <div class="dashboard-gallery-col">
+      <div id="dashboard-gallery" class="dashboard-gallery-col dashboard-panel active" role="tabpanel">
         <h2 style="margin-bottom:0.25rem;">Photo Gallery</h2>
         <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:2rem;">Upload and manage photos shown in the public gallery.</p>
 
@@ -114,13 +205,14 @@
 
         <hr style="border:none;border-top:1px solid var(--border);margin:2.5rem 0;"/>
 
-        <h3 style="margin-bottom:1rem;">Existing Photos</h3>
+        <h3 style="margin-bottom:0.25rem;">Existing Photos</h3>
+        <p style="color:var(--text-light);font-size:0.82rem;margin-bottom:1rem;">Drag a photo to rearrange the public gallery.</p>
         <div id="existing-photos" class="uploaded-previews">
           <p style="color:var(--text-light);font-size:0.9rem;">Loading...</p>
         </div>
       </div>
 
-      <div class="dashboard-messages-col">
+      <div id="dashboard-messages" class="dashboard-messages-col dashboard-panel" role="tabpanel">
         <h2 style="margin-bottom:0.25rem;">Messages</h2>
         <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Contact form submissions from visitors.</p>
         <div id="messages-list">
@@ -141,9 +233,30 @@
     <img id="lightbox-img" src="" alt="" style="max-width:90vw;max-height:88vh;border-radius:8px;object-fit:contain;"/>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="/static/js/admin.js"></script>
   <script>
+    function setDashboardTab(tabName) {
+      const showMessages = tabName === "messages";
+      const galleryPanel = document.getElementById("dashboard-gallery");
+      const messagesPanel = document.getElementById("dashboard-messages");
+      const tabs = document.querySelectorAll(".dashboard-tab");
+
+      galleryPanel.classList.toggle("active", !showMessages);
+      messagesPanel.classList.toggle("active", showMessages);
+
+      tabs.forEach(tab => {
+        const selected = tab.getAttribute("aria-controls") === (showMessages ? "dashboard-messages" : "dashboard-gallery");
+        tab.classList.toggle("active", selected);
+        tab.setAttribute("aria-selected", selected ? "true" : "false");
+      });
+
+      document.querySelector(".dashboard-content").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       getAdminEmail().then(email => { document.getElementById("admin-email").textContent = email; });
       loadDashboardGallery();
