@@ -414,6 +414,10 @@ section {
   margin-bottom: 0.1rem;
 }
 
+.admin-box .form-group {
+  margin-bottom: 1rem;
+}
+
 .form-group label {
   display: block;
   font-size: 0.875rem;
